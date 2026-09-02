@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<script>
+/* Đọc giao diện đã lưu TRƯỚC khi trang vẽ ra, để không bị nháy sáng/tối */
+(function () {
+    var saved = localStorage.getItem("site-theme") || "dark";
+    document.documentElement.setAttribute("data-theme", saved);
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimeVSub</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+<div class="header-left">
+<button type="button" class="menu-toggle" id="menuToggle" aria-label="Mở menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+</div>
+
+<div class="search-box">
+<input type="search" id="searchInput" placeholder="Tìm kiếm phim..." aria-label="Tìm kiếm phim">
+<button type="button" id="searchButton">Tìm kiếm</button>
+</div>
+</header>
+
+<!-- Menu ngăn kéo bên trái -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+<a href="index.html" class="drawer-brand">
+<img src="img/logo.png" alt="">
+<span>AnimeVSub</span>
+</a>
+
+<nav class="drawer-nav">
+<a href="index.html" class="drawer-link active">🏠 Trang chủ</a>
+</nav>
+
+<div class="drawer-section">
+<p class="drawer-label">Giao diện</p>
+<div class="theme-switch" id="themeSwitch">
+<button type="button" data-theme-choice="light"><span class="icon">☀️</span>Sáng</button>
+<button type="button" data-theme-choice="dark"><span class="icon">🌙</span>Tối</button>
+<button type="button" data-theme-choice="amoled"><span class="icon">⚫</span>AMOLED</button>
+</div>
+</div>
+</aside>
+
+<main>
+<div class="page-heading">
+<h2>Phim mới thêm</h2>
+</div>
+
+<div class="filter-bar">
+<div class="filter-dropdown" id="genreDropdown">
+<button type="button" class="filter-dropdown-btn" id="genreDropdownBtn" aria-haspopup="true" aria-expanded="false">
+<span id="genreDropdownLabel">Thể loại</span>
+<span class="filter-count" id="genreCount" hidden>0</span>
+</button>
+<div class="filter-dropdown-panel" id="genrePanel"></div>
+</div>
+<div class="filter-dropdown" id="yearDropdown">
+<button type="button" class="filter-dropdown-btn" id="yearDropdownBtn" aria-haspopup="true" aria-expanded="false">
+<span id="yearDropdownLabel">Năm</span>
+</button>
+<div class="filter-dropdown-panel" id="yearPanel"></div>
+</div>
+<button type="button" class="filter-reset" id="filterReset">Xóa lọc</button>
+</div>
+           <!-- * Anime * -->
+<div class="movie-list" id="movieList"></div>
+
+<p id="noResults" class="no-results" hidden>Không tìm thấy kết quả.</p>
+
+<div class="pagination" id="pagination"></div>
+</main>
+
+<!-- Popup giới thiệu phim + chọn season -->
+<div class="modal-overlay" id="movieModal">
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<button type="button" class="modal-close" id="modalClose" aria-label="Đóng">✕</button>
+<div class="modal-poster">
+<img id="modalPoster" src="" alt="">
+</div>
+<div class="modal-body">
+<h2 id="modalTitle"></h2>
+<div class="modal-tags" id="modalTags"></div>
+<p class="modal-desc" id="modalDesc"></p>
+<div class="modal-seasons" id="modalSeasons">
+<p class="drawer-label" id="seasonsLabel">Chọn phần</p>
+<div class="season-buttons" id="seasonButtons"></div>
+</div>
+</div>
+</div>
+</div>
+
+<footer class="site-footer">
+    © 2026 AnimeVSub
+</footer>
+
+<script>
+/* ====== MENU NGĂN KÉO ====== */
+var menuToggle = document.getElementById("menuToggle");
+var drawer = document.getElementById("drawer");
+var drawerOverlay = document.getElementById("drawerOverlay");
+
+function openDrawer() {
+    drawer.classList.add("open");
+    drawerOverlay.classList.add("open");
+    menuToggle.classList.add("open");
+    menuToggle.setAttribute("aria-expanded", "true");
+    drawer.setAttribute("aria-hidden", "false");
+}
+
+function closeDrawer() {
+    drawer.classList.remove("open");
+    drawerOverlay.classList.remove("open");
+    menuToggle.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    drawer.setAttribute("aria-hidden", "true");
+}
+
+menuToggle.addEventListener("click", function () {
+    if (drawer.classList.contains("open")) {
+        closeDrawer();
+    } else {
+        openDrawer();
+    }
+});
+
+drawerOverlay.addEventListener("click", closeDrawer);
+
+/* ====== CÔNG TẮC GIAO DIỆN SÁNG / TỐI / AMOLED ====== */
+var themeButtons = document.querySelectorAll("#themeSwitch button");
+
+function refreshThemeButtons() {
+    var current = document.documentElement.getAttribute("data-theme") || "dark";
+    themeButtons.forEach(function (btn) {
+        btn.classList.toggle("active", btn.dataset.themeChoice === current);
+    });
+}
+
+themeButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+        var choice = btn.dataset.themeChoice;
+        document.documentElement.setAttribute("data-theme", choice);
+        localStorage.setItem("site-theme", choice);
+        refreshThemeButtons();
+    });
+});
+
+refreshThemeButtons();
+
+/* ====== TÌM KIẾM + LỌC THEO THỂ LOẠI (CHỌN NHIỀU) / NĂM ====== */
+var searchInput = document.getElementById("searchInput");
+var searchButton = document.getElementById("searchButton");
+var genreDropdown = document.getElementById("genreDropdown");
+var genreDropdownBtn = document.getElementById("genreDropdownBtn");
+var genreDropdownLabel = document.getElementById("genreDropdownLabel");
+var genreCount = document.getElementById("genreCount");
+var genrePanel = document.getElementById("genrePanel");
+var yearDropdown = document.getElementById("yearDropdown");
+var yearDropdownBtn = document.getElementById("yearDropdownBtn");
+var yearDropdownLabel = document.getElementById("yearDropdownLabel");
+var yearPanel = document.getElementById("yearPanel");
+var filterReset = document.getElementById("filterReset");
+var movies = [];
+var noResults = document.getElementById("noResults");
+var selectedGenres = new Set();
+var selectedYear = "";
+
+/* ====== PHÂN TRANG ====== */
+var ITEMS_PER_PAGE = 12; /* Muốn mỗi trang hiện bao nhiêu phim thì sửa số này */
+var paginationBox = document.getElementById("pagination");
+var currentPage = 1;
+
+function populateFilters() {
+    var genreSet = new Set();
+    var yearSet = new Set();
+
+    movies.forEach(function (movie) {
+        var genres = (movie.dataset.genres || "").split(",");
+        genres.forEach(function (g) {
+            var trimmed = g.trim();
+            if (trimmed) genreSet.add(trimmed);
+        });
+        if (movie.dataset.year) yearSet.add(movie.dataset.year);
+    });
+
+    Array.from(genreSet).sort().forEach(function (g) {
+        var row = document.createElement("label");
+        row.className = "filter-checkbox-row";
+
+        var input = document.createElement("input");
+        input.type = "checkbox";
+        input.value = g;
+        input.addEventListener("change", function () {
+            if (input.checked) {
+                selectedGenres.add(g);
+            } else {
+                selectedGenres.delete(g);
+            }
+            updateGenreLabel();
+            applyFilters();
+        });
+
+        var span = document.createElement("span");
+        span.textContent = g;
+
+        row.appendChild(input);
+        row.appendChild(span);
+        genrePanel.appendChild(row);
+    });
+
+    yearPanel.appendChild(createYearOption("", "Tất cả năm"));
+    Array.from(yearSet).sort().reverse().forEach(function (y) {
+        yearPanel.appendChild(createYearOption(y, y));
+    });
+}
+
+function createYearOption(value, label) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "filter-year-option";
+    btn.textContent = label;
+    btn.dataset.value = value;
+    btn.addEventListener("click", function () {
+        selectedYear = value;
+        updateYearLabel();
+        toggleYearPanel(false);
+        applyFilters();
+    });
+    return btn;
+}
+
+function updateYearLabel() {
+    yearDropdownLabel.textContent = selectedYear ? selectedYear : "Năm";
+    yearDropdownBtn.classList.toggle("has-selection", !!selectedYear);
+    yearPanel.querySelectorAll(".filter-year-option").forEach(function (btn) {
+        btn.classList.toggle("active", btn.dataset.value === selectedYear);
+    });
+}
+
+function toggleYearPanel(forceState) {
+    var open = typeof forceState === "boolean" ? forceState : !yearDropdown.classList.contains("open");
+    yearDropdown.classList.toggle("open", open);
+    yearDropdownBtn.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function updateGenreLabel() {
+    var count = selectedGenres.size;
+    if (count === 0) {
+        genreDropdownLabel.textContent = "Thể loại";
+        genreCount.hidden = true;
+        genreCount.textContent = "0";
+    } else {
+        genreDropdownLabel.textContent = "Thể loại";
+        genreCount.hidden = false;
+        genreCount.textContent = String(count);
+    }
+    genreDropdownBtn.classList.toggle("has-selection", count > 0);
+}
+
+function toggleGenrePanel(forceState) {
+    var open = typeof forceState === "boolean" ? forceState : !genreDropdown.classList.contains("open");
+    genreDropdown.classList.toggle("open", open);
+    genreDropdownBtn.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+genreDropdownBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    toggleGenrePanel();
+    toggleYearPanel(false);
+});
+
+yearDropdownBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    toggleYearPanel();
+    toggleGenrePanel(false);
+});
+
+document.addEventListener("click", function (e) {
+    if (!genreDropdown.contains(e.target)) {
+        toggleGenrePanel(false);
+    }
+    if (!yearDropdown.contains(e.target)) {
+        toggleYearPanel(false);
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        toggleGenrePanel(false);
+        toggleYearPanel(false);
+    }
+});
+
+function getMatchedMovies() {
+    var keyword = searchInput.value.trim().toLowerCase();
+    var year = selectedYear;
+
+    return movies.filter(function (movie) {
+        var title = (movie.dataset.title || movie.querySelector("h3")?.textContent || "").toLowerCase();
+        var type = (movie.dataset.type || "").toLowerCase();
+        var genreList = (movie.dataset.genres || "").split(",").map(function (g) { return g.trim(); }).filter(Boolean);
+        var genresLower = genreList.map(function (g) { return g.toLowerCase(); });
+        var movieYear = movie.dataset.year || "";
+
+        var matchesKeyword = !keyword || title.includes(keyword) || type.includes(keyword) || genresLower.join(",").includes(keyword);
+        var matchesGenre = selectedGenres.size === 0 || genreList.some(function (g) { return selectedGenres.has(g); });
+        var matchesYear = !year || movieYear === year;
+
+        return matchesKeyword && matchesGenre && matchesYear;
+    });
+}
+
+function renderPage() {
+    var matched = getMatchedMovies();
+    var totalPages = Math.max(1, Math.ceil(matched.length / ITEMS_PER_PAGE));
+
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    var start = (currentPage - 1) * ITEMS_PER_PAGE;
+    var end = start + ITEMS_PER_PAGE;
+    var visibleThisPage = matched.slice(start, end);
+
+    movies.forEach(function (movie) {
+        movie.style.display = visibleThisPage.indexOf(movie) !== -1 ? "" : "none";
+    });
+
+    noResults.hidden = matched.length !== 0;
+    renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+    paginationBox.innerHTML = "";
+
+    if (totalPages <= 1) return;
+
+    function makeButton(label, page, opts) {
+        opts = opts || {};
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = label;
+        if (opts.active) btn.classList.add("active");
+        if (opts.disabled) {
+            btn.disabled = true;
+        } else {
+            btn.addEventListener("click", function () {
+                currentPage = page;
+                renderPage();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+        }
+        return btn;
+    }
+
+    paginationBox.appendChild(makeButton("← Trước", currentPage - 1, { disabled: currentPage === 1 }));
+
+    for (var i = 1; i <= totalPages; i++) {
+        paginationBox.appendChild(makeButton(String(i), i, { active: i === currentPage }));
+    }
+
+    paginationBox.appendChild(makeButton("Sau →", currentPage + 1, { disabled: currentPage === totalPages }));
+}
+
+function applyFilters() {
+    currentPage = 1;
+    renderPage();
+}
+
+async function loadMovies() {
+    try {
+        var response = await fetch("data/page2.html", { cache: "no-cache" });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        var html = await response.text();
+        document.getElementById("movieList").innerHTML = html;
+        movies = Array.from(document.querySelectorAll(".movie"));
+
+        populateFilters();
+        updateGenreLabel();
+        updateYearLabel();
+        renderPage();
+
+        movies.forEach(function (movie) {
+            movie.addEventListener("click", function () {
+                openModal(movie);
+            });
+            movie.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    openModal(movie);
+                }
+            });
+        });
+    } catch (error) {
+        console.error("Không thể tải danh sách phim:", error);
+        noResults.hidden = false;
+        noResults.textContent = "Không thể tải danh sách phim.";
+    }
+}
+
+searchInput.addEventListener("input", applyFilters);
+searchButton.addEventListener("click", applyFilters);
+filterReset.addEventListener("click", function () {
+    searchInput.value = "";
+    selectedGenres.clear();
+    selectedYear = "";
+    genrePanel.querySelectorAll("input[type=checkbox]").forEach(function (cb) { cb.checked = false; });
+    updateGenreLabel();
+    updateYearLabel();
+    applyFilters();
+});
+
+loadMovies();
+
+/* ====== POPUP GIỚI THIỆU PHIM + CHỌN SEASON ====== */
+var movieModal = document.getElementById("movieModal");
+var modalClose = document.getElementById("modalClose");
+var modalPoster = document.getElementById("modalPoster");
+var modalTitle = document.getElementById("modalTitle");
+var modalTags = document.getElementById("modalTags");
+var modalDesc = document.getElementById("modalDesc");
+var seasonButtons = document.getElementById("seasonButtons");
+var seasonsLabel = document.getElementById("seasonsLabel");
+var modalSeasons = document.getElementById("modalSeasons");
+
+function openModal(movie) {
+    modalPoster.src = movie.dataset.poster || "";
+    modalPoster.alt = movie.dataset.title || "";
+    modalTitle.textContent = movie.dataset.title || "";
+    modalDesc.textContent = movie.dataset.desc || "Đang cập nhật nội dung giới thiệu.";
+
+    modalTags.innerHTML = "";
+    var year = movie.dataset.year;
+    var genres = (movie.dataset.genres || "").split(",").map(function (g) { return g.trim(); }).filter(Boolean);
+    var tagValues = [];
+    if (year) tagValues.push(year);
+    tagValues = tagValues.concat(genres);
+
+    tagValues.forEach(function (t) {
+        var span = document.createElement("span");
+        span.className = "tag";
+        span.textContent = t;
+        modalTags.appendChild(span);
+    });
+
+    seasonButtons.innerHTML = "";
+    var seasons = [];
+    try {
+        seasons = JSON.parse(movie.dataset.seasons || "[]");
+    } catch (e) {
+        seasons = [];
+    }
+
+    var isSingleMovie = seasons.length <= 1;
+    modalSeasons.classList.toggle("single-watch", isSingleMovie);
+    seasonsLabel.hidden = isSingleMovie;
+
+    seasons.forEach(function (season) {
+        var a = document.createElement("a");
+        if (isSingleMovie) {
+            a.className = "watch-now-btn";
+            a.textContent = "▶ " + (season.label || "Xem phim");
+        } else {
+            a.className = "season-btn";
+            a.textContent = season.label;
+        }
+        a.href = season.url;
+        seasonButtons.appendChild(a);
+    });
+
+    movieModal.classList.add("open");
+}
+
+function closeModal() {
+    movieModal.classList.remove("open");
+}
+
+modalClose.addEventListener("click", closeModal);
+movieModal.addEventListener("click", function (e) {
+    if (e.target === movieModal) closeModal();
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        closeDrawer();
+        closeModal();
+    }
+});
+</script>
+
+</body>
+</html>

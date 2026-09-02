@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<script>
+/* Đọc giao diện đã lưu TRƯỚC khi trang vẽ ra, để không bị nháy sáng/tối */
+(function () {
+    var saved = localStorage.getItem("site-theme") || "dark";
+    document.documentElement.setAttribute("data-theme", saved);
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimeVSub</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+<div class="header-left">
+<button type="button" class="menu-toggle" id="menuToggle" aria-label="Mở menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+</div>
+
+<div class="search-box">
+<input type="search" id="searchInput" placeholder="Tìm kiếm phim..." aria-label="Tìm kiếm phim">
+<button type="button" id="searchButton">Tìm kiếm</button>
+</div>
+</header>
+
+<!-- Menu ngăn kéo bên trái -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+<a href="trang1.html" class="drawer-brand">
+<img src="../img/logo.png" alt="">
+<span>AnimeVSub</span>
+</a>
+
+<nav class="drawer-nav">
+<a href="trang1.html" class="drawer-link active">Trang chủ</a>
+</nav>
+
+<div class="drawer-section">
+<p class="drawer-label">Giao diện</p>
+<div class="theme-switch" id="themeSwitch">
+<button type="button" data-theme-choice="light"><span class="icon">☀️</span>Sáng</button>
+<button type="button" data-theme-choice="dark"><span class="icon">🌙</span>Tối</button>
+<button type="button" data-theme-choice="amoled"><span class="icon">⚫</span>AMOLED</button>
+</div>
+</div>
+</aside>
+
+<main>
+<div class="page-heading">
+<h2>Phim mới thêm</h2>
+</div>
+
+<div class="filter-bar">
+<div class="filter-dropdown" id="genreDropdown">
+<button type="button" class="filter-dropdown-btn" id="genreDropdownBtn" aria-haspopup="true" aria-expanded="false">
+<span id="genreDropdownLabel">Thể loại</span>
+<span class="filter-count" id="genreCount" hidden>0</span>
+</button>
+<div class="filter-dropdown-panel" id="genrePanel"></div>
+</div>
+<div class="filter-dropdown" id="yearDropdown">
+<button type="button" class="filter-dropdown-btn" id="yearDropdownBtn" aria-haspopup="true" aria-expanded="false">
+<span id="yearDropdownLabel">Năm</span>
+</button>
+<div class="filter-dropdown-panel" id="yearPanel"></div>
+</div>
+<button type="button" class="filter-reset" id="filterReset">Xóa lọc</button>
+</div>
+
+<!-- Chuyển trang: được JS vẽ tự động bên dưới, xem CURRENT_PAGE / TOTAL_PAGES trong script -->
+<nav class="pagination" id="pageNav" aria-label="Chuyển trang"></nav>
+
+
+           <!-- * Anime * -->
+<div class="movie-list">
+
+<div class="movie"
+     tabindex="0"
+     role="button"
+     data-title="Seishun Buta Yarou wa Yumemiru Shoujo no Yume wo Minai"
+     data-poster="../img/seishun-buta-yarou-wa-bunny-girl-senpai-no-yume-wo-minai/poster.jpg"
+     data-type="Anime Bộ"
+     data-year="2019""
+     data-genres="Đang thêm"
+     data-desc="Hội chứng tuổi dậy thì — một hội chứng bí ẩn, tin đồn chỉ ảnh hưởng đến những người ở tuổi dậy thì. Ví dụ, một cô gái thỏ đột nhiên xuất hiện trước mặt Sakuta Azusagawa. Danh tính thực sự của cô gái thỏ là Mai Sakurajima, một thiếu niên nổi tiếng hiện đang là một học sinh trung học không hoạt động. Vì lý do nào đó, nhân vật quyến rũ của cô không phản ánh trong con mắt của người khác. Trong quá trình tiết lộ bí ẩn đằng sau hiện tượng này, Sakuta bắt đầu khám phá cảm xúc của mình đối với Mai. Đặt trong một thành phố nơi bầu trời và biển tỏa sáng, Sakuta mở ra ý nghĩa đằng sau những cuộc gặp gỡ kì quái của mình với những phụ nữ có hội chứng nói trên."
+
+     data-seasons='[
+{"label":"Phần 1","url":"../anime/seishun-buta-yarou-wa-bunny-girl-senpai-no-yume-wo-minai/s1.html"},
+{"label":"Phần Movie","url":"../anime/seishun-buta-yarou-wa-bunny-girl-senpai-no-yume-wo-minai/movie-1.html"},
+{"label":"Phần Movie 2","url":"../anime/seishun-buta-yarou-wa-bunny-girl-senpai-no-yume-wo-minai/movie-2.html"},
+{"label":"Phần Movie 3","url":"../anime/seishun-buta-yarou-wa-bunny-girl-senpai-no-yume-wo-minai/movie-3.html"},
+{"label":"Phần 2","url":"../anime/seishun-buta-yarou-wa-bunny-girl-senpai-no-yume-wo-minai/s2.html"}
+
+
+
+]'>
+<img src="../img/seishun-buta-yarou-wa-bunny-girl-senpai-no-yume-wo-minai/poster.jpg">
+<span class="movie-badge">Anime Bộ</span>
+<div class="movie-info">
+<h3>Seishun Buta Yarou wa Yumemiru Shoujo no Yume wo Minai</h3>
+<p class="ten-anime">Hội Chứng Tuổi Thanh Xuân</p>
+</div>
+</div>
+
+
+
+<div class="movie"
+     tabindex="0"
+     role="button"
+     data-title="Tenki no Ko"
+     data-poster="../img/dua-con-cua-thoi-tiet-tenki-no-ko/poster.jpg"
+     data-type="Anime Lẻ"
+     data-year="2019""
+     data-genres="Romance,Slice of Life,Drama,Fantasy"
+     data-desc="Mùa hè năm đầu cấp Ba, Hodaka bỏ nhà ra đi. Cậu từ một hòn đảo xa xôi hẻo lánh đến Tokyo, nhưng sau đó nhanh chóng rơi vào cảnh túng thiếu và phải sống chuỗi ngày cô đơn. Nhưng cuối cùng cậu đã tìm được công việc: viết bài cho một tạp chí huyền bí. Sau khi cậu bắt đầu công việc, mưa cứ rơi mãi rơi mãi không thôi. Ở một góc thành phố đông đúc và nhộn nhịp, Hodaka đã gặp thiếu nữ tên Hina. Cô sống cùng em trai, luôn vui vẻ và kiên cường. Cô cũng có một sức mạnh vô cùng đặc biệt: “Này, từ bây giờ trời hãy hửng nắng đi nào.” Từng chút một, mưa ngừng rơi, và ánh sáng tuyệt đẹp rọi chiếu những nóc nhà trong thành phố. Chỉ bằng một lời cầu nguyện, cô đã khiến bầu trời trở nên sáng trong."
+
+     data-seasons='[
+{"label":"Xem phim","url":"../anime/dua-con-cua-thoi-tiet-tenki-no-ko.html"}
+
+]'>
+<img src="../img/dua-con-cua-thoi-tiet-tenki-no-ko/poster.jpg">
+<span class="movie-badge">Anime Lẻ</span>
+<div class="movie-info">
+<h3>Tenki no Ko</h3>
+<p class="ten-anime">Đứa Con Của Thời Tiết</p>
+</div>
+</div>
+
+
+<div class="movie"
+     tabindex="0"
+     role="button"
+     data-title="Pokémon"
+     data-poster="../img/pokemon-tv-series/poster.jpg"
+     data-type="Anime Bộ"
+     data-year="1997"
+     data-genres="Shounen,Fantasy,Comedy"
+     data-desc="Ash Ketchum lên đường cùng chú Pikachu để trở thành Bậc Thầy Pokémon, thu phục Pokémon mới, thi đấu tại các Hội Quán và đối đầu với Đội Quân Rocket trên khắp vùng đất Kanto."
+     data-seasons='[
+
+{"label":"Phần 1","url":"../anime/pokemon-tv-series/s1.html"},
+{"label":"Phần 2","url":"../anime/pokemon/tvseries-s2.html"},
+{"label":"Phần 3","url":"../anime/pokemon/tvseries-s3.html"},
+{"label":"Phần 4","url":"../anime/pokemon/tvseries-s4.html"},
+{"label":"Phần 5","url":"../anime/pokemon/tvseries-s5.html"},
+{"label":"Phần 6","url":"../anime/pokemon/tvseries-s6.html"},
+{"label":"Phần 7","url":"../anime/pokemon/tvseries-s7.html"},
+{"label":"Phần 8","url":"../anime/pokemon/tvseries-s8.html"},
+{"label":"Phần 9","url":"../anime/pokemon/tvseries-s9.html"},
+{"label":"Phần 10","url":"../anime/pokemon/tvseries-s10.html"},
+{"label":"Phần 11","url":"../anime/pokemon/tvseries-s11.html"},
+{"label":"Phần 12","url":"../anime/pokemon/tvseries-s12.html"},
+{"label":"Phần 13","url":"../anime/pokemon/tvseries-s13.html"},
+{"label":"Phần 14","url":"../anime/pokemon/tvseries-s14.html"},
+{"label":"Phần 15","url":"../anime/pokemon/tvseries-s15.html"},
+{"label":"Phần 16","url":"../anime/pokemon/tvseries-s16.html"},
+{"label":"Phần 17","url":"../anime/pokemon/tvseries-s17.html"},
+{"label":"Phần 18","url":"../anime/pokemon/tvseries-s18.html"},
+{"label":"Phần 19","url":"../anime/pokemon/tvseries-s19.html"},
+{"label":"Phần 20","url":"../anime/pokemon/tvseries-s20.html"},
+{"label":"Phần 21","url":"../anime/pokemon/tvseries-s21.html"},
+{"label":"Phần 22","url":"../anime/pokemon/tvseries-s22.html"},
+{"label":"Phần 23","url":"../anime/pokemon/tvseries-s23.html"},
+{"label":"Phần 24","url":"../anime/pokemon/tvseries-s24.html"},
+{"label":"Phần 25","url":"../anime/pokemon/tvseries-s25.html"},
+{"label":"Phần 26","url":"../anime/pokemon/tvseries-s26.html"},
+{"label":"Phần 27","url":"../anime/pokemon/tvseries-s27.html"},
+{"label":"Phần 28","url":"../anime/pokemon/tvseries-s28.html"},
+{"label":"Phần 29","url":"../anime/pokemon/tvseries-s29.html"}
+
+]'>
+<img src="../img/pokemon-tv-series/poster.jpg" alt="Pokémon">
+<span class="movie-badge">Anime Bộ</span>
+<div class="movie-info">
+<h3>Pokémon</h3>
+<p class="ten-anime">Bảo Bối Thần Kì</p>
+</div>
+</div>
+
+
+<p id="noResults" class="no-results" hidden>Không tìm thấy kết quả.</p>
+
+</main>
+
+<!-- Popup giới thiệu phim + chọn season -->
+<div class="modal-overlay" id="movieModal">
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<button type="button" class="modal-close" id="modalClose" aria-label="Đóng">✕</button>
+<div class="modal-poster">
+<img id="modalPoster" src="" alt="">
+</div>
+<div class="modal-body">
+<h2 id="modalTitle"></h2>
+<div class="modal-tags" id="modalTags"></div>
+<p class="modal-desc" id="modalDesc"></p>
+<div class="modal-seasons" id="modalSeasons">
+<p class="drawer-label" id="seasonsLabel"></p>
+<div class="season-buttons" id="seasonButtons"></div>
+</div>
+</div>
+</div>
+</div>
+
+<footer class="site-footer">
+    © 2026 AnimeVSub
+</footer>
+
+<script>
+/* ====== CHUYỂN TRANG (mỗi trang là 1 file .html riêng) ======
+   - CURRENT_PAGE: trang hiện tại của CHÍNH FILE NÀY (index.html = 1).
+     Copy cả file này sang trang2.html, trang3.html... rồi chỉ cần đổi số này.
+   - TOTAL_PAGES: tổng số trang đang có. Thêm trang mới thì tăng số này lên ở TẤT CẢ các file. */
+var CURRENT_PAGE = 1;
+var TOTAL_PAGES = 100;
+</script>
+<script src="script.js"></script>
+
+</body>
+</html>

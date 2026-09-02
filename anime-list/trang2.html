@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<script>
+/* Đọc giao diện đã lưu TRƯỚC khi trang vẽ ra, để không bị nháy sáng/tối */
+(function () {
+    var saved = localStorage.getItem("site-theme") || "dark";
+    document.documentElement.setAttribute("data-theme", saved);
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimeVSub</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+<div class="header-left">
+<button type="button" class="menu-toggle" id="menuToggle" aria-label="Mở menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+</div>
+
+<div class="search-box">
+<input type="search" id="searchInput" placeholder="Tìm kiếm phim..." aria-label="Tìm kiếm phim">
+<button type="button" id="searchButton">Tìm Kiếm</button>
+</div>
+</header>
+
+<!-- Menu ngăn kéo bên trái -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+<a href="trang1.html" class="drawer-brand">
+<img src="../img/logo.png" alt="">
+<span>AnimeVSub</span>
+</a>
+
+<nav class="drawer-nav">
+<a href="trang1.html" class="drawer-link active">Trang chủ</a>
+</nav>
+
+<div class="drawer-section">
+<p class="drawer-label">Giao diện</p>
+<div class="theme-switch" id="themeSwitch">
+<button type="button" data-theme-choice="light"><span class="icon">☀️</span>Sáng</button>
+<button type="button" data-theme-choice="dark"><span class="icon">🌙</span>Tối</button>
+<button type="button" data-theme-choice="amoled"><span class="icon">⚫</span>AMOLED</button>
+</div>
+</div>
+</aside>
+
+<main>
+<div class="page-heading">
+<h2>Phim mới thêm</h2>
+</div>
+
+<div class="filter-bar">
+<div class="filter-dropdown" id="genreDropdown">
+<button type="button" class="filter-dropdown-btn" id="genreDropdownBtn" aria-haspopup="true" aria-expanded="false">
+<span id="genreDropdownLabel">Thể loại</span>
+<span class="filter-count" id="genreCount" hidden>0</span>
+</button>
+<div class="filter-dropdown-panel" id="genrePanel"></div>
+</div>
+<div class="filter-dropdown" id="yearDropdown">
+<button type="button" class="filter-dropdown-btn" id="yearDropdownBtn" aria-haspopup="true" aria-expanded="false">
+<span id="yearDropdownLabel">Năm</span>
+</button>
+<div class="filter-dropdown-panel" id="yearPanel"></div>
+</div>
+<button type="button" class="filter-reset" id="filterReset">Xóa lọc</button>
+</div>
+
+<!-- Chuyển trang: được JS vẽ tự động bên dưới, xem CURRENT_PAGE / TOTAL_PAGES trong script -->
+<nav class="pagination" id="pageNav" aria-label="Chuyển trang"></nav>
+
+
+           <!-- * Anime * -->
+<div class="movie-list">
+
+
+
+
+
+
+
+<p id="noResults" class="no-results" hidden>Không tìm thấy kết quả.</p>
+
+</main>
+
+<!-- Popup giới thiệu phim + chọn season -->
+<div class="modal-overlay" id="movieModal">
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<button type="button" class="modal-close" id="modalClose" aria-label="Đóng">✕</button>
+<div class="modal-poster">
+<img id="modalPoster" src="" alt="">
+</div>
+<div class="modal-body">
+<h2 id="modalTitle"></h2>
+<div class="modal-tags" id="modalTags"></div>
+<p class="modal-desc" id="modalDesc"></p>
+<div class="modal-seasons" id="modalSeasons">
+<p class="drawer-label" id="seasonsLabel">Chọn phần</p>
+<div class="season-buttons" id="seasonButtons"></div>
+</div>
+</div>
+</div>
+</div>
+
+<footer class="site-footer">
+    © 2026 AnimeVSub
+</footer>
+
+<script>
+/* ====== CHUYỂN TRANG (mỗi trang là 1 file .html riêng) ======
+   - CURRENT_PAGE: trang hiện tại của CHÍNH FILE NÀY (index.html = 1).
+     Copy cả file này sang trang2.html, trang3.html... rồi chỉ cần đổi số này.
+   - TOTAL_PAGES: tổng số trang đang có. Thêm trang mới thì tăng số này lên ở TẤT CẢ các file. */
+var CURRENT_PAGE = 2;
+var TOTAL_PAGES = 100;
+</script>
+<script src="script.js"></script>
+
+</body>
+</html>

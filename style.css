@@ -1,0 +1,1215 @@
+/* =========================
+   BIẾN & RESET CHUNG
+   Mặc định = giao diện Tối (navy). Có thêm Sáng & AMOLED qua [data-theme].
+========================= */
+:root {
+    --bg: #090e1a;
+    --bg-soft: #0c1220;
+    --bg-elevated: #111a2e;
+    --bg-card: #131c33;
+    --text: #eef1f8;
+    --text-muted: #8a93ac;
+    --accent: #5b7cfa;
+    --accent-2: #8b6cf0;
+    --accent-hover: #7593ff;
+    --border: #1f2940;
+    --radius-sm: 8px;
+    --radius: 14px;
+    --radius-lg: 20px;
+    --shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    --shadow-glow: 0 0 0 1px rgba(91, 124, 250, 0.18), 0 16px 36px rgba(91, 124, 250, 0.12);
+    --transition: 0.22s ease;
+}
+
+/* Giao diện Sáng */
+html[data-theme="light"] {
+    --bg: #f4f6fb;
+    --bg-soft: #eaedf5;
+    --bg-elevated: #ffffff;
+    --bg-card: #ffffff;
+    --text: #12141c;
+    --text-muted: #5c6175;
+    --accent: #4a63e0;
+    --accent-2: #7c5cf0;
+    --accent-hover: #3b52c4;
+    --border: #e1e4ee;
+    --shadow: 0 12px 26px rgba(20, 24, 40, 0.08);
+    --shadow-glow: 0 0 0 1px rgba(74, 99, 224, 0.14), 0 16px 32px rgba(74, 99, 224, 0.10);
+}
+
+/* Giao diện AMOLED - đen tuyền */
+html[data-theme="amoled"] {
+    --bg: #000000;
+    --bg-soft: #000000;
+    --bg-elevated: #0a0a0a;
+    --bg-card: #0c0c0c;
+    --text: #f2f2f2;
+    --text-muted: #8b8b8b;
+    --accent: #6a8bff;
+    --accent-2: #9a7bff;
+    --accent-hover: #85a1ff;
+    --border: #1a1a1a;
+    --shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+    --shadow-glow: 0 0 0 1px rgba(106, 139, 255, 0.22), 0 16px 36px rgba(106, 139, 255, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background:
+        radial-gradient(1200px 600px at 15% -10%, rgba(91, 124, 250, 0.14), transparent 60%),
+        radial-gradient(900px 500px at 100% 0%, rgba(139, 108, 240, 0.10), transparent 55%),
+        var(--bg);
+    color: var(--text);
+    font-family: "Inter", "Segoe UI", Arial, Helvetica, sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+    transition: background var(--transition), color var(--transition);
+}
+
+/* AMOLED: nền đen phẳng tuyệt đối, bỏ quầng gradient */
+html[data-theme="amoled"] body {
+    background: var(--bg);
+}
+
+a, button, input, select {
+    outline: none;
+    font-family: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+a {
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+}
+
+::selection {
+    background: rgba(91, 124, 250, 0.35);
+    color: #fff;
+}
+
+/* =========================
+   HEADER
+========================= */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: rgba(9, 14, 26, 0.72);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 28px;
+}
+
+html[data-theme="light"] header {
+    background: rgba(244, 246, 251, 0.78);
+}
+
+html[data-theme="amoled"] header {
+    background: rgba(0, 0, 0, 0.82);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-elevated);
+    transition: color var(--transition), border-color var(--transition), background var(--transition);
+}
+
+.back:hover {
+    color: var(--text);
+    border-color: rgba(91, 124, 250, 0.4);
+    background: var(--bg-card);
+}
+
+/* Nút hamburger mở menu trái */
+.menu-toggle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-elevated);
+    cursor: pointer;
+    padding: 0;
+    transition: border-color var(--transition), background var(--transition);
+}
+
+.menu-toggle:hover {
+    border-color: rgba(91, 124, 250, 0.4);
+    background: var(--bg-card);
+}
+
+.menu-toggle span {
+    width: 18px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform var(--transition), opacity var(--transition);
+}
+
+.menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-toggle.open span:nth-child(2) { opacity: 0; }
+.menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Ô tìm kiếm trên trang chủ */
+.search-box {
+    display: flex;
+    gap: 0;
+    flex: 1;
+    max-width: 420px;
+    min-width: 200px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.search-box:focus-within {
+    border-color: rgba(91, 124, 250, 0.55);
+    box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.12);
+}
+
+.search-box input {
+    flex: 1;
+    min-width: 0;
+    padding: 9px 16px;
+    background: transparent;
+    color: var(--text);
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-box input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-box button {
+    padding: 9px 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    transition: filter var(--transition), transform var(--transition);
+}
+
+.search-box button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* =========================
+   MENU NGĂN KÉO (DRAWER) BÊN TRÁI
+========================= */
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition);
+    z-index: 40;
+}
+
+.drawer-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 288px;
+    max-width: 86vw;
+    background: var(--bg-elevated);
+    border-right: 1px solid var(--border);
+    z-index: 41;
+    transform: translateX(-100%);
+    transition: transform var(--transition);
+    display: flex;
+    flex-direction: column;
+    padding: 22px 18px 28px;
+    overflow-y: auto;
+}
+
+.drawer.open {
+    transform: translateX(0);
+    box-shadow: 24px 0 60px rgba(0, 0, 0, 0.35);
+}
+
+.drawer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 800;
+    padding-bottom: 20px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.drawer-brand img {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.12);
+}
+
+.drawer-brand span {
+    background: linear-gradient(90deg, var(--text) 20%, var(--accent) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.drawer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 24px;
+}
+
+.drawer-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 600;
+    transition: background var(--transition), color var(--transition);
+}
+
+.drawer-link:hover,
+.drawer-link.active {
+    background: rgba(91, 124, 250, 0.12);
+    color: var(--text);
+}
+
+.drawer-label {
+    font-size: 11.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+}
+
+/* Công tắc chọn giao diện Sáng / Tối / AMOLED */
+.theme-switch {
+    display: flex;
+    gap: 6px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+}
+
+.theme-switch button {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 4px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+}
+
+.theme-switch button .icon {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.theme-switch button.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+}
+
+/* =========================
+   NỘI DUNG CHÍNH
+========================= */
+main {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 40px 28px 72px;
+}
+
+.page-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 4px 0 22px;
+}
+
+.page-heading p,
+.section-title {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--text-muted);
+    margin: 0;
+    position: relative;
+    padding-left: 14px;
+}
+
+
+.page-heading h2,
+.section-title {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--text-muted);
+    margin: 0;
+    position: relative;
+    padding-left: 14px;
+}
+
+.page-heading h2::before,
+.section-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    bottom: 2px;
+    width: 4px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+}
+
+/* Thanh lọc nhanh: thể loại, năm, tìm kiếm */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.filter-bar .select-wrap {
+    position: relative;
+}
+
+.filter-bar .select-wrap::after {
+    content: "";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid var(--text-muted);
+    border-bottom: 2px solid var(--text-muted);
+    transform: translateY(-65%) rotate(45deg);
+    pointer-events: none;
+}
+
+/* Dropdown chọn nhiều thể loại */
+.filter-dropdown {
+    position: relative;
+}
+
+.filter-dropdown-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+}
+
+.filter-dropdown-btn::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid var(--text-muted);
+    border-bottom: 2px solid var(--text-muted);
+    transform: translateY(-2px) rotate(45deg);
+}
+
+.filter-dropdown-btn:hover,
+.filter-dropdown-btn.has-selection {
+    border-color: rgba(91, 124, 250, 0.4);
+}
+
+.filter-dropdown-btn.has-selection {
+    color: var(--accent-hover);
+}
+
+.filter-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 800;
+}
+
+.filter-count[hidden] {
+    display: none;
+}
+
+.filter-dropdown-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 200px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px;
+    box-shadow: var(--shadow-glow), var(--shadow);
+    z-index: 15;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.filter-dropdown.open .filter-dropdown-panel {
+    display: flex;
+}
+
+.filter-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+    transition: background var(--transition);
+}
+
+.filter-checkbox-row:hover {
+    background: var(--bg-soft);
+}
+
+.filter-checkbox-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* Từng mục năm trong dropdown "Năm" */
+.filter-year-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 9px 10px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+}
+
+.filter-year-option:hover {
+    background: var(--bg-soft);
+}
+
+.filter-year-option.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+}
+
+.filter-bar select {
+    min-width: 0;
+    width: auto;
+    padding: 9px 28px 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.filter-bar select:hover {
+    border-color: rgba(91, 124, 250, 0.4);
+}
+
+.filter-bar .filter-reset {
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color var(--transition), border-color var(--transition);
+}
+
+.filter-bar .filter-reset:hover {
+    color: var(--text);
+    border-color: rgba(91, 124, 250, 0.4);
+}
+
+/* =========================
+   DANH SÁCH PHIM (trang chủ)
+========================= */
+.movie-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 24px;
+}
+
+@media (max-width: 560px) {
+    .movie-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .pagination button,
+    .pagination a,
+    .pagination span.disabled {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 10px;
+        font-size: 12.5px;
+    }
+}
+
+.movie {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.movie:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-glow), var(--shadow);
+    border-color: rgba(91, 124, 250, 0.35);
+}
+
+.movie:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.movie img {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    display: block;
+    background: var(--bg-elevated);
+    transition: transform 0.35s ease;
+}
+
+.movie:hover img {
+    transform: scale(1.05);
+}
+
+/* Nhãn định dạng (BD Remux, Blu-ray, TV Series...) đè lên góc ảnh */
+.movie-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    pointer-events: none;
+}
+
+.movie-info {
+    padding: 14px 14px 16px;
+}
+
+.movie-info h3 {
+    margin: 0 0 4px;
+    font-size: 15.5px;
+    font-weight: 700;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ten-anime {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 13.5px;
+    font-weight: 600;
+}
+
+.no-results {
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 48px;
+    font-size: 15px;
+}
+
+/* Phân trang: Trang 1, 2, 3... */
+.pagination {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 24px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: 4px;
+}
+
+.pagination::-webkit-scrollbar {
+    height: 4px;
+}
+
+.pagination::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 999px;
+}
+
+.pagination button,
+.pagination a {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-elevated);
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.pagination button:hover:not(:disabled):not(.active),
+.pagination a:hover:not(.active) {
+    border-color: rgba(91, 124, 250, 0.4);
+    background: var(--bg-card);
+}
+
+.pagination button.active,
+.pagination a.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    border-color: transparent;
+}
+
+.pagination button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.pagination span.disabled {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 700;
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* =========================
+   POPUP GIỚI THIỆU PHIM + CHỌN SEASON
+========================= */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition);
+    z-index: 50;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    max-width: 660px;
+    width: 100%;
+    max-height: 86vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: var(--shadow-glow), var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 560px) {
+    .modal {
+        flex-direction: row;
+    }
+    .modal-poster {
+        width: 220px;
+        flex-shrink: 0;
+    }
+}
+
+.modal-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    aspect-ratio: 2 / 3;
+}
+
+.modal-body {
+    padding: 26px;
+    flex: 1;
+    min-width: 0;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition);
+}
+
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+#modalTitle {
+    margin: 0 0 10px;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.modal-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.modal-tags .tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+
+.modal-desc {
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-size: 14.5px;
+    margin: 0 0 22px;
+}
+
+.modal-seasons .drawer-label {
+    margin-bottom: 12px;
+}
+
+.season-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding-bottom: 6px;
+    margin: 0 -22px;
+    padding-left: 22px;
+    padding-right: 22px;
+}
+
+.season-buttons::-webkit-scrollbar {
+    height: 6px;
+}
+
+.season-buttons::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 999px;
+}
+
+.season-btn {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: filter var(--transition), transform var(--transition);
+}
+
+.season-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.modal-seasons.single-watch .season-buttons {
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+}
+
+.watch-now-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    transition: filter var(--transition), transform var(--transition);
+}
+
+.watch-now-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* =========================
+   FOOTER
+========================= */
+.site-footer {
+    max-width: 1240px;
+    margin: 40px auto 0;
+    padding: 26px 28px 40px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+    text-align: center;
+}
+
+/* =========================
+   TRANG XEM PHIM
+========================= */
+.movie-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    background: linear-gradient(90deg, var(--text), var(--accent-hover) 120%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+}
+
+.subtitle {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 20px;
+}
+
+.description {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+    margin-bottom: 26px;
+    border-radius: var(--radius);
+}
+
+.description h2 {
+    margin: 0 0 10px;
+    font-size: 17px;
+}
+
+.description p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Chọn season ngay trên trang xem phim */
+.season-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+.season-tabs a {
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.season-tabs a:hover {
+    color: var(--text);
+    border-color: rgba(91, 124, 250, 0.4);
+}
+
+.season-tabs a.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    border-color: transparent;
+}
+
+.player {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    margin-bottom: 22px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-glow), var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.player iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+/* Điều hướng tập trước / tập sau */
+.episode-navigation {
+    display: grid;
+    grid-template-columns: 1fr minmax(180px, 2fr) 1fr;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0 42px;
+}
+
+.episode-navigation button {
+    min-height: 50px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-elevated);
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.episode-navigation button:hover:not(:disabled) {
+    background: var(--bg-card);
+    border-color: rgba(91, 124, 250, 0.45);
+    transform: translateY(-1px);
+}
+
+.episode-navigation button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+#currentEpisode {
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.35;
+    color: var(--text-muted);
+    padding: 6px;
+}
+
+/* Danh sách tập */
+.episodes h2 {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    position: relative;
+    padding-left: 14px;
+}
+
+.episodes h2::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    bottom: 2px;
+    width: 4px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+}
+
+.episode-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 10px;
+}
+
+.episode {
+    min-height: 46px;
+    padding: 10px 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), color var(--transition), transform var(--transition);
+}
+
+.episode:hover {
+    border-color: rgba(91, 124, 250, 0.4);
+    background: var(--bg-card);
+    transform: translateY(-1px);
+}
+
+.episode:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Tập đã xem (đánh dấu ✓) */
+.episode.watched {
+    color: var(--accent-hover);
+    border-color: rgba(91, 124, 250, 0.32);
+    background: rgba(91, 124, 250, 0.08);
+}
+
+/* Tập đang phát (đánh dấu ▶) */
+.episode.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: var(--shadow-glow);
+}

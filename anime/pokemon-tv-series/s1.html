@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<script>
+/* Đọc giao diện đã lưu TRƯỚC khi trang vẽ ra, để không bị nháy sáng/tối */
+(function () {
+    var saved = localStorage.getItem("site-theme") || "dark";
+    document.documentElement.setAttribute("data-theme", saved);
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/style.css">
+<title>Pokémon - Phần 1 - AnimeVSub</title>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <button type="button" class="menu-toggle" id="menuToggle" aria-label="Mở menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <a href="/index.html" class="back">← Trang chủ</a>
+</header>
+
+<!-- Menu ngăn kéo bên trái -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <a href="/index.html" class="drawer-brand">
+    <img src="/img/logo.png">
+    <span>AnimeVSub</span>
+  </a>
+
+  <nav class="drawer-nav">
+    <a href="/index.html" class="drawer-link">Trang chủ</a>
+  </nav>
+
+  <div class="drawer-section">
+    <p class="drawer-label">Giao diện</p>
+    <div class="theme-switch" id="themeSwitch">
+      <button type="button" data-theme-choice="light"><span class="icon">☀️</span>Sáng</button>
+      <button type="button" data-theme-choice="dark"><span class="icon">🌙</span>Tối</button>
+      <button type="button" data-theme-choice="amoled"><span class="icon">⚫</span>AMOLED</button>
+    </div>
+  </div>
+</aside>
+
+<main>
+
+  <div class="page-heading">
+    <h2>Pokémon - Phần 1</h2>
+  </div>
+
+  <div class="player">
+    <iframe id="player" src="" allowfullscreen></iframe>
+  </div>
+
+  <div class="episode-navigation">
+    <button id="prevEpisode" onclick="previousEpisode()">Tập trước ←</button>
+    <span id="currentEpisode"></span>
+    <button id="nextEpisode" onclick="nextEpisode()">Tập tiếp →</button>
+  </div>
+
+  <section class="episodes">
+    <h2>Danh sách tập</h2>
+    <div id="episode-list" class="episode-list"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+    © AnimeVSub
+</footer>
+
+<script>
+const episodes = [
+
+    { number: 1, title: "Pokemon! Tớ Chọn Cậu!", url: "https://player.abyssplayer.com/E0dsnqE9I" },
+    { number: 2, title: "Trận quyết đấu! Trung tâm Pokemon!", url: "https://player.abyssplayer.com/qBoz62urO" },
+    { number: 3, title: "Thu phục Pokemon!", url: "https://player.abyssplayer.com/G-1ucucbW" },
+    { number: 4, title: "Thách đấu thiếu niên Samurai!", url: "https://player.abyssplayer.com/SdCTH__OX" },
+    { number: 5, title: "Trận đấu ở thành phố Nibi!", url: "https://player.abyssplayer.com/2M8vxDOXv" },
+    { number: 6, title: "Pippi và đá mặt trăng", url: "https://player.abyssplayer.com/sZu_hPpWi" },
+    { number: 7, title: "Bông hoa nước của thành phố Hanada", url: "https://player.abyssplayer.com/dGZo9pYjw" },
+    { number: 8, title: "Đường tới liên minh Pokemon", url: "https://player.abyssplayer.com/6zlSkSeIP" },
+    { number: 9, title: "Sổ tay chiến thắng Pokemon", url: "https://player.abyssplayer.com/IGQLu3Z7V" },
+    { number: 10, title: "Fushigidane của ngôi làng bí ẩn", url: "https://player.abyssplayer.com/l2JZrKgXF" },
+    { number: 11, title: "Pokemon đi lạc, Hitokage", url: "https://player.abyssplayer.com/YGqwMgk8F" },
+    { number: 12, title: "Quân đoàn Zenigame xuất hiện!", url: "https://player.abyssplayer.com/lYkF1Xiie" },
+    { number: 13, title: "Ngọn hải đăng của Masaki", url: "https://player.abyssplayer.com/4-RWrfg2a" },
+    { number: 14, title: "Cuộc đối đầu giữa điện! Hội quán Kuchiba", url: "https://player.abyssplayer.com/2NMoHIcCn" },
+    { number: 15, title: "Trận chiến trên con tàu St_ Anne!", url: "https://player.abyssplayer.com/gd6BFhMKl" },
+    { number: 16, title: "Pokemon phiêu lưu kí", url: "https://player.abyssplayer.com/5Daywtmol" },
+    { number: 17, title: "Hòn đảo Pokemon khổng lồ!", url: "https://player.abyssplayer.com/XQV1-3i-5" },
+    { number: 18, title: "Ngày Nghỉ Ở Aopulco", url: "https://player.abyssplayer.com/keT4hUVX7" },
+    { number: 19, title: "Menokurage và Dokukurage", url: "https://player.abyssplayer.com/KcUx5zJ3u" },
+    { number: 20, title: "Pokemon ma và kỳ nghỉ hè", url: "https://player.abyssplayer.com/IuTj5CQWe" },
+    { number: 21, title: "Tạm biệt Butterfree", url: "https://player.abyssplayer.com/OSBE_gC7k" },
+    { number: 22, title: "Đại quyết đấu siêu năng lực với Casey!", url: "https://player.abyssplayer.com/PKhKWdkqU" },
+    { number: 23, title: "Thu phục bóng ma trong tháp Pokemon!", url: "https://player.abyssplayer.com/AqezEaBQ2" },
+    { number: 24, title: "Cuộc chiến giữa bóng ma và siêu năng lực!", url: "https://player.abyssplayer.com/lhx5tfvGQ" },
+    { number: 25, title: "Đừng nổi giận nhé Okorizaru!", url: "https://player.abyssplayer.com/sZinolpkk" },
+    { number: 26, title: "Erika và Kusaihana", url: "https://player.abyssplayer.com/uA3s6mrLg" },
+    { number: 27, title: "Sleeper và Pokemon thôi miên!", url: "https://player.abyssplayer.com/daKzCj2UK" },
+    { number: 28, title: "Rokon! Trận chiến của những nhà chăm sóc!", url: "https://player.abyssplayer.com/tIwLuNECJ" },
+    { number: 29, title: "Pokemon giác đấu! Trận đại chiến!", url: "https://player.abyssplayer.com/26uXd1TXL" },
+    { number: 30, title: "Giấc mơ chuột điện của Coil!", url: "https://player.abyssplayer.com/5_rRYCmuMX" },
+    { number: 31, title: "Những con Digda!", url: "https://player.abyssplayer.com/yfELC9fiR" },
+    { number: 32, title: "Cuộc tranh tài ở hội quán hồng nhạt!", url: "https://player.abyssplayer.com/irJ04FLqK" },
+    { number: 33, title: "Cuộc chạy đua của Pokemon lửa!", url: "https://player.abyssplayer.com/HiZcfi3hM" },
+    { number: 34, title: "Lời ru của Garura", url: "https://player.abyssplayer.com/aC1aN_76w" },
+    { number: 35, title: "Truyền thuyết về Miniryu", url: "https://player.abyssplayer.com/ASxcvat5w8" },
+    { number: 36, title: "Những khó khăn trong cuộc hành trình giông bão", url: "https://player.abyssplayer.com/Q_4CzeWh5" },
+    { number: 37, title: "Cô gái bắt chước và Metamon", url: "https://player.abyssplayer.com/NZkiJDbMn" },
+    { number: 38, title: "Chiến binh điện não Polygon", url: "https://player.abyssplayer.com/pMs5LD1b8" },
+    { number: 39, title: "Khu rừng của Pikachu", url: "https://player.abyssplayer.com/HDmLm2MEi" },
+    { number: 40, title: "Bốn anh em Ibui", url: "https://player.abyssplayer.com/sj51E1KZF" },
+    { number: 41, title: "Tỉnh dậy đi! Kabigon!", url: "https://player.abyssplayer.com/5FBw4xMH2" },
+    { number: 42, title: "Cuộc quyết chiến! Hội quán Pokemon!", url: "https://player.abyssplayer.com/SOUB3jfCH" },
+    { number: 43, title: "Cuộc hành quân của quân đoàn Nassy!", url: "https://player.abyssplayer.com/I8vRvzJV_" },
+    { number: 44, title: "Paras và Parasect", url: "https://player.abyssplayer.com/7o34x0v7W" },
+    { number: 45, title: "Hát đi Purin!", url: "https://player.abyssplayer.com/nNg1bPgWr" },
+    { number: 46, title: "Phục hồi! Pokemon hoá thạch!", url: "https://player.abyssplayer.com/ftpDk_ORx" },
+    { number: 47, title: "Đơn thuốc của Lucky", url: "https://player.abyssplayer.com/Jny6bW5rE" },
+    { number: 48, title: "Kojiro và Gardie!", url: "https://player.abyssplayer.com/TWsTnypSO" },
+    { number: 49, title: "Vịt Kamonegi!", url: "https://player.abyssplayer.com/IwO4pliuGE" },
+    { number: 50, title: "Togepi sẽ thuộc về ai!", url: "https://player.abyssplayer.com/g7uY8d1qA" },
+    { number: 51, title: "Fushigidane của khu vườn hoa bí ẩn", url: "https://player.abyssplayer.com/gOXhKAs1V" },
+    { number: 52, title: "Kích chiến! Lễ hội búp bê", url: "https://player.abyssplayer.com/zKts_ZLQU" },
+    { number: 53, title: "Toàn viên tập hợp tại Tết thiếu nhi", url: "https://player.abyssplayer.com/TKtNBIhtc" },
+    { number: 54, title: "Chó cảnh sát Gardie!", url: "https://player.abyssplayer.com/yL0rltalN" },
+    { number: 55, title: "Chụp ảnh Pikachu!", url: "https://player.abyssplayer.com/YDQFZUNO_" },
+    { number: 56, title: "Cuộc kiểm tra về Pokemon!", url: "https://player.abyssplayer.com/eTOo5GNGA" },
+    { number: 57, title: "Bí mật của trung tâm nuôi thú!", url: "https://player.abyssplayer.com/-V37qIPES" },
+    { number: 58, title: "Nổi lửa lên! Hội quán Guren!", url: "https://player.abyssplayer.com/VB5-pFITc" },
+    { number: 59, title: "Quyết chiến! Hội quán Guren!", url: "https://player.abyssplayer.com/Ec49RKdZU" },
+    { number: 60, title: "Đảo rùa Kamex", url: "https://player.abyssplayer.com/c-mp5hMib" },
+    { number: 61, title: "Hội quán Hanada! Trận chiến dưới nước!", url: "https://player.abyssplayer.com/OeuNTDXKb" },
+    { number: 62, title: "Cuộc đấu giữa Pippi và Purin", url: "https://player.abyssplayer.com/aEMe0A-ZI" },
+    { number: 63, title: "Hội quán Tokiwa! Tấm huy chương cuối cùng!", url: "https://player.abyssplayer.com/cCqNp-fWm" },
+    { number: 64, title: "Barrierd của đội xiếc", url: "https://player.abyssplayer.com/GFqOv0z4v" },
+    { number: 65, title: "Giáng sinh của Rougela", url: "https://player.abyssplayer.com/RXjR1t-cT" },
+    { number: 66, title: "Một chuyến dã ngoại", url: "https://player.abyssplayer.com/M4g5xeVnq" },
+    { number: 67, title: "Quyết đấu đối thủ! Phòng thí nghiệm của tiến sĩ Okido!", url: "https://player.abyssplayer.com/ziGIrU2QT" },
+    { number: 68, title: "Yadon trở thành Yadoran", url: "https://player.abyssplayer.com/62SLGIfMY" },
+    { number: 69, title: "Truyền thuyết Pikachu đi trên sóng", url: "https://player.abyssplayer.com/pGdyrEsJE" },
+    { number: 70, title: "Công viên thực vật của Kusaihana", url: "https://player.abyssplayer.com/VCWVdQGkiz" },
+    { number: 71, title: "Điện ảnh Pokemon!", url: "https://player.abyssplayer.com/ug8NoGM5L" },
+    { number: 72, title: "Nyasu học tiếng người!", url: "https://player.abyssplayer.com/0jXTer3KF" },
+    { number: 73, title: "Tứ thiên vương Shiba xuất hiện!", url: "https://player.abyssplayer.com/GSUtLno5_" },
+    { number: 74, title: "Kích đấu! Pokemon siêu cổ đại", url: "https://player.abyssplayer.com/EiMDi1s2a" },
+    { number: 75, title: "Gậy xương của Garagara", url: "https://player.abyssplayer.com/Kc4yZghGI" },
+    { number: 76, title: "Fire! Lễ ra mắt liên minh Pokemon!", url: "https://player.abyssplayer.com/aN96dXFBS" },
+    { number: 77, title: "Khai mạc liên minh Pokemon! Sân đấu nước!", url: "https://player.abyssplayer.com/ZaLjVpKnI" },
+    { number: 78, title: "Sân đấu băng! Trận chiến của Pokemon lửa!", url: "https://player.abyssplayer.com/rK1o2EjHX" },
+    { number: 79, title: "Sân đấu cỏ! Đối thủ bất ngờ!", url: "https://player.abyssplayer.com/jCHeQr0Z4" },
+    { number: 80, title: "Đối thủ xuất hiện!", url: "https://player.abyssplayer.com/xzMx2Yuvc" },
+    { number: 81, title: "Sân thi đấu Sekiei! Cuộc đấu với Hiroshi!", url: "https://player.abyssplayer.com/arKncFnSb" },
+    { number: 82, title: "Liên minh Pokemon và cuộc đấu cuối cùng!", url: "https://player.abyssplayer.com/aJ-riKI_m" }
+
+];
+
+const storageKey = "watched-pkm";
+const lastEpisodeKey = "last-pkm";
+let currentEpisode = null;
+
+const episodeList = document.getElementById("episode-list");
+
+episodes.forEach(function(episode) {
+  const button = document.createElement("button");
+  button.className = "episode";
+  button.dataset.number = episode.number;
+  button.textContent = String(episode.number).padStart(2);    
+  button.onclick = function() {
+    playEpisode(episode.number);
+  };
+  episodeList.appendChild(button);
+});
+
+function playEpisode(number) {
+  const episode = episodes.find(function(item) {
+    return item.number === number;
+  });
+
+  if (!episode) return;
+
+  currentEpisode = number;
+  document.getElementById("player").src = episode.url;
+
+  localStorage.setItem(lastEpisodeKey, String(number));
+  saveWatched(number);
+  updateButtons();
+  updateNavigation();
+
+  String(number).padStart(2);
+}
+
+function saveWatched(number) {
+  let watched = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+  if (!watched.includes(number)) {
+    watched.push(number);
+  }
+
+  localStorage.setItem(storageKey, JSON.stringify(watched));
+}
+
+function updateButtons() {
+  const watched = JSON.parse(localStorage.getItem(storageKey)) || [];
+  const buttons = document.querySelectorAll(".episode");
+
+  buttons.forEach(function(button) {
+    const number = Number(button.dataset.number);
+    button.classList.remove("active", "watched");
+
+    if (number === currentEpisode) {
+      button.classList.add("active");+ String(number).padStart(2);
+    } else if (watched.includes(number)) {
+      button.classList.add("watched"); + String(number).padStart(2);
+    } else {
+      button.textContent = String(number).padStart(2);
+    }
+  });
+}
+
+function nextEpisode() {
+  if (currentEpisode === null) {
+    playEpisode(episodes[0].number);
+    return;
+  }
+
+  const index = episodes.findIndex(function(item) {
+    return item.number === currentEpisode;
+  });
+
+  if (index >= 0 && index < episodes.length - 1) {
+    playEpisode(episodes[index + 1].number);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+function previousEpisode() {
+  if (currentEpisode === null) return;
+
+  const index = episodes.findIndex(function(item) {
+    return item.number === currentEpisode;
+  });
+
+  if (index > 0) {
+    playEpisode(episodes[index - 1].number);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+function updateNavigation() {
+  const current = document.getElementById("currentEpisode");
+  const previous = document.getElementById("prevEpisode");
+  const next = document.getElementById("nextEpisode");
+
+
+  if (currentEpisode === null) {
+    current.textContent = "";
+    previous.disabled = true;
+    next.disabled = false;
+    return;
+  }
+
+
+  const episode = episodes.find(function(item) {
+    return item.number === currentEpisode;
+  });
+
+
+  const index = episodes.findIndex(function(item) {
+    return item.number === currentEpisode;
+  });
+  
+  
+     <!-- Xoá cái này nếu không nhập tên tập -->
+current.textContent = episode.title;
+
+     
+  previous.disabled = index <= 0;
+  next.disabled = index >= episodes.length - 1;
+}
+
+function restoreHistory() {
+  const saved = Number(localStorage.getItem(lastEpisodeKey));
+
+  if (saved && episodes.some(function(item) { return item.number === saved; })) {
+    currentEpisode = saved;
+    document.getElementById("player").src =
+      episodes.find(function(item) { return item.number === saved; }).url;
+  }
+updateButtons();
+  updateNavigation();
+
+  if (currentEpisode !== null) {
+    const episode = episodes.find(function(item) {
+      return item.number === currentEpisode;
+    });
+String(currentEpisode).padStart(2)
+  }
+}
+
+restoreHistory();
+
+/* ====== MENU NGĂN KÉO ====== */
+var menuToggle = document.getElementById("menuToggle");
+var drawer = document.getElementById("drawer");
+var drawerOverlay = document.getElementById("drawerOverlay");
+
+function openDrawer() {
+    drawer.classList.add("open");
+    drawerOverlay.classList.add("open");
+    menuToggle.classList.add("open");
+    menuToggle.setAttribute("aria-expanded", "true");
+    drawer.setAttribute("aria-hidden", "false");
+}
+
+function closeDrawer() {
+    drawer.classList.remove("open");
+    drawerOverlay.classList.remove("open");
+    menuToggle.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    drawer.setAttribute("aria-hidden", "true");
+}
+
+menuToggle.addEventListener("click", function () {
+    if (drawer.classList.contains("open")) {
+        closeDrawer();
+    } else {
+        openDrawer();
+    }
+});
+
+drawerOverlay.addEventListener("click", closeDrawer);
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeDrawer();
+});
+
+/* ====== CÔNG TẮC GIAO DIỆN SÁNG / TỐI / AMOLED ====== */
+var themeButtons = document.querySelectorAll("#themeSwitch button");
+
+function refreshThemeButtons() {
+    var current = document.documentElement.getAttribute("data-theme") || "dark";
+    themeButtons.forEach(function (btn) {
+        btn.classList.toggle("active", btn.dataset.themeChoice === current);
+    });
+}
+
+themeButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+        var choice = btn.dataset.themeChoice;
+        document.documentElement.setAttribute("data-theme", choice);
+        localStorage.setItem("site-theme", choice);
+        refreshThemeButtons();
+    });
+});
+
+refreshThemeButtons();
+</script>
+
+</body>
+</html>

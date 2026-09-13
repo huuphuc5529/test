@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../style.css">
+<title>AnimeVSub</title>
+</head>
+<body>
+
+<div class="detail-backdrop" id="detailBackdrop"></div>
+
+<header>
+  <div class="header-left">
+    <button type="button" class="menu-toggle" id="menuToggle" aria-label="Mở menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Menu ngăn kéo bên trái -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <a href="1.html" class="drawer-brand">
+    <img src="../img/logo.png" alt="">
+    <span>AnimeVSub</span>
+  </a>
+
+  <nav class="drawer-nav">
+    <a href="1.html" class="drawer-link">Trang chủ</a>
+  </nav>
+</aside>
+
+<main id="detailRoot">
+
+  <!-- Hiện khi vào thẳng trang này mà không có dữ liệu phim (chưa bấm từ 1 poster) -->
+  <div class="detail-not-found" id="notFound" hidden>
+    <p>Không tìm thấy thông tin phim.</p>
+    <p><a href="1.html">← Quay về trang chủ để chọn phim</a></p>
+  </div>
+
+  <div id="detailContent" hidden>
+
+    <div class="detail-header">
+      <h1 id="detailTitle"></h1>
+      <p class="detail-vi" id="detailVi"></p>
+    </div>
+
+    <div class="detail-poster">
+      <img id="detailPosterImg" src="" alt="">
+      <a href="#" id="posterPlayBtn" class="poster-play-btn" aria-label="Xem phim" hidden>
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+      </a>
+      <a href="#" id="posterWatchBtn" class="poster-watch-btn" hidden>Xem phim</a>
+    </div>
+
+    <div class="detail-body">
+      <p class="detail-desc" id="detailDesc"></p>
+
+      <div class="detail-meta" id="detailMeta"></div>
+
+      <div class="detail-seasons" id="detailSeasonsBlock" hidden>
+        <p class="drawer-label" id="detailSeasonsLabel">Chọn phần</p>
+        <div class="season-buttons" id="detailSeasonButtons"></div>
+      </div>
+    </div>
+
+    <section class="movie-full-info" id="fullInfoSection" hidden>
+      <h2>Thông tin phim</h2>
+      <div class="info-card" id="infoCard"></div>
+    </section>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+    © AnimeVSub
+</footer>
+
+<script>
+/* ====== ĐỌC DỮ LIỆU PHIM ĐÃ LƯU KHI BẤM VÀO POSTER Ở TRANG CHỦ ====== */
+var raw = sessionStorage.getItem("movie-detail");
+var movie = null;
+try {
+  movie = raw ? JSON.parse(raw) : null;
+} catch (e) {
+  movie = null;
+}
+
+if (!movie) {
+  document.getElementById("notFound").hidden = false;
+} else {
+  document.getElementById("detailContent").hidden = false;
+  renderDetail(movie);
+}
+
+function renderDetail(movie) {
+  document.title = (movie.title || "Phim") + " - AnimeVSub";
+
+  var posterImg = document.getElementById("detailPosterImg");
+  posterImg.src = movie.poster || "";
+  posterImg.alt = movie.title || "";
+
+  var backdropEl = document.getElementById("detailBackdrop");
+  if (movie.poster) {
+    backdropEl.style.backgroundImage = "url('" + movie.poster + "')";
+  }
+
+  document.getElementById("detailTitle").textContent = movie.title || "";
+
+  var viEl = document.getElementById("detailVi");
+
+  /* Thể loại chung của phim (dùng làm giá trị mặc định nếu 1 phần không khai riêng) */
+  var movieGenres = (movie.genres || "").split(",").map(function (g) { return g.trim(); }).filter(Boolean);
+
+  /* Mô tả */
+  var descEl = document.getElementById("detailDesc");
+
+  /* Chọn phần / bản chiếu — bấm nút "Chọn phần" chỉ đổi lựa chọn,
+     chỉ bấm vào nút/icon "Xem phim" trên poster mới thực sự chuyển trang.
+     Mỗi phần có thể khai riêng: title, desc, poster, status, duration, quality,
+     ageRating, language, genres, director, country, studio, seasonNote.
+     Trường nào phần đó không khai thì tự lấy lại giá trị chung của phim. */
+  var seasons = movie.seasons || [];
+  var posterPlayBtn = document.getElementById("posterPlayBtn");
+  var posterWatchBtn = document.getElementById("posterWatchBtn");
+  var titleEl = document.getElementById("detailTitle");
+  var fullInfoSection = document.getElementById("fullInfoSection");
+  var infoCard = document.getElementById("infoCard");
+
+  function setWatchTarget(index) {
+    var season = seasons[index];
+    if (!season) return;
+    posterPlayBtn.href = season.url;
+    posterWatchBtn.href = season.url;
+  }
+
+  function applySeasonContent(index) {
+    var season = seasons[index] || {};
+
+    titleEl.textContent = season.title || movie.title || "";
+    document.title = (season.title || movie.title || "Phim");
+
+    var vi = season.vi || movie.vi || "";
+    if (vi) {
+      viEl.hidden = false;
+      viEl.textContent = vi;
+    } else {
+      viEl.hidden = true;
+    }
+
+    var desc = season.desc || movie.desc || "";
+    if (desc) {
+      descEl.hidden = false;
+      descEl.textContent = desc;
+    } else {
+      descEl.hidden = true;
+    }
+
+    posterImg.src = season.poster || movie.poster || "";
+    var backdropSrc = season.poster || movie.poster || "";
+    if (backdropSrc) {
+      backdropEl.style.backgroundImage = "url('" + backdropSrc + "')";
+    }
+
+    var genres = season.genres
+      ? season.genres.split(",").map(function (g) { return g.trim(); }).filter(Boolean)
+      : movieGenres;
+
+    /* Thông tin phim chi tiết — dựng lại mỗi lần đổi phần */
+    var infoRows = [
+      { label: "Trạng thái", value: season.status || movie.status },
+      { label: "Thời lượng", value: season.duration || movie.duration },
+      { label: "Chất lượng", value: season.quality || movie.quality, badge: true },
+      { label: "Rating", value: season.ageRating || movie.ageRating, badge: true },
+      { label: "Ngôn ngữ", value: season.language || movie.language },
+      { label: "Thể loại", value: genres.length ? genres.join(", ") : "" },
+      { label: "Đạo diễn", value: season.director || movie.director },
+      { label: "Quốc gia", value: season.country || movie.country },
+      { label: "Studio", value: season.studio || movie.studio },
+      { label: "Season", value: season.seasonNote || movie.seasonNote }
+    ].filter(function (row) { return row.value; });
+
+    infoCard.innerHTML = "";
+    fullInfoSection.hidden = infoRows.length === 0;
+
+    infoRows.forEach(function (row) {
+      var div = document.createElement("div");
+      div.className = "info-row";
+
+      var label = document.createElement("span");
+      label.className = "info-label";
+      label.textContent = row.label + ":";
+
+      var value = document.createElement("span");
+      value.className = "info-value";
+      if (row.badge) {
+        var badge = document.createElement("span");
+        badge.className = "badge-pill";
+        badge.textContent = row.value;
+        value.appendChild(badge);
+      } else {
+        value.textContent = row.value;
+      }
+
+      div.appendChild(label);
+      div.appendChild(value);
+      infoCard.appendChild(div);
+    });
+  }
+
+  if (seasons.length > 0) {
+    posterPlayBtn.hidden = false;
+    posterWatchBtn.hidden = false;
+    setWatchTarget(0);
+    applySeasonContent(0);
+  } else {
+    /* Không có dữ liệu season nào: vẫn hiện thông tin chung của phim */
+    applySeasonContent(-1);
+  }
+
+  if (seasons.length > 1) {
+    var seasonsBlock = document.getElementById("detailSeasonsBlock");
+    seasonsBlock.hidden = false;
+    var seasonButtonsEl = document.getElementById("detailSeasonButtons");
+    seasons.forEach(function (season, index) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "season-btn";
+      if (index === 0) btn.classList.add("active");
+      btn.textContent = season.label;
+      btn.addEventListener("click", function () {
+        seasonButtonsEl.querySelectorAll(".season-btn").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        btn.classList.add("active");
+        setWatchTarget(index);
+        applySeasonContent(index);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      seasonButtonsEl.appendChild(btn);
+    });
+  }
+}
+
+function formatViews(n) {
+  var num = Number(n);
+  if (!num) return n;
+  return num.toLocaleString("vi-VN");
+}
+
+/* ====== MENU NGĂN KÉO ====== */
+var menuToggle = document.getElementById("menuToggle");
+var drawer = document.getElementById("drawer");
+var drawerOverlay = document.getElementById("drawerOverlay");
+
+function openDrawer() {
+    drawer.classList.add("open");
+    drawerOverlay.classList.add("open");
+    menuToggle.classList.add("open");
+    menuToggle.setAttribute("aria-expanded", "true");
+    drawer.setAttribute("aria-hidden", "false");
+}
+
+function closeDrawer() {
+    drawer.classList.remove("open");
+    drawerOverlay.classList.remove("open");
+    menuToggle.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    drawer.setAttribute("aria-hidden", "true");
+}
+
+menuToggle.addEventListener("click", function () {
+    if (drawer.classList.contains("open")) {
+        closeDrawer();
+    } else {
+        openDrawer();
+    }
+});
+
+drawerOverlay.addEventListener("click", closeDrawer);
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeDrawer();
+});
+</script>
+
+</body>
+</html>

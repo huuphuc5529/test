@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/style.css">
+<title>Hội Chứng Tuổi Thanh Xuân Movie</title>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <button type="button" class="menu-toggle" id="menuToggle" aria-label="Mở menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Menu ngăn kéo bên trái -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <a href="/index.html" class="drawer-brand">
+    <img src="/img/logo.png">
+    <span>AnimeVSub</span>
+  </a>
+
+  <nav class="drawer-nav">
+    <a href="/index.html" class="drawer-link">Trang chủ</a>
+  </nav>
+</aside>
+
+<main>
+
+  <div class="player">
+    <iframe id="player" src="" allowfullscreen></iframe>
+  </div>
+
+  <section class="server-select">
+    <h2>Chọn Server:</h2>
+    <div id="server-list" class="server-list"></div>
+  </section>
+
+  <section class="episodes">
+    <h2>Yurei Fansub</h2>
+    <div id="episode-list" class="episode-list"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+    © AnimeVSub
+</footer>
+
+<script>
+/* Mỗi bản chiếu: number = mã định danh nội bộ (không hiện ra),
+   title = CHỮ sẽ hiện trên nút (vd: "Vietsub", "Thuyết minh", "Full HD"...) */
+const episodes = [
+
+{ number: 1, title: "Xem Full",
+servers: { H: "https://player.abyssplayer.com/wSEOhIYfK"} }
+
+
+];
+const lastEpisodeKey = "last-hcttx-mv1";
+const serverKey = "server-hcttx-mv1";
+let currentEpisode = null;
+
+/* Danh sách server xem phim.
+   name = tên nội bộ, label = chữ hiện trên nút.
+   Muốn thêm link riêng cho từng server ở 1 bản chiếu cụ thể,
+   thêm field "servers: { FB: '...', HDX: '...' }" vào bản chiếu đó trong mảng episodes ở trên.
+   Nếu bản chiếu không có link riêng cho server đang chọn, trang sẽ tự dùng lại link "url" mặc định (server DU). */
+const servers = [
+  { name: "H", label: "H" }
+];
+let currentServer = localStorage.getItem(serverKey) || servers[0].name;
+
+const episodeList = document.getElementById("episode-list");
+const serverListEl = document.getElementById("server-list");
+
+servers.forEach(function(server) {
+  const button = document.createElement("button");
+  button.className = "server-btn";
+  button.dataset.server = server.name;
+  button.textContent = server.label;
+  button.onclick = function() {
+    selectServer(server.name);
+  };
+  serverListEl.appendChild(button);
+});
+
+function getEpisodeUrl(episode, server) {
+  if (episode.servers && episode.servers[server]) {
+    return episode.servers[server];
+  }
+  return episode.url;
+}
+
+function selectServer(server) {
+  currentServer = server;
+  localStorage.setItem(serverKey, server);
+  updateServerButtons();
+
+  if (currentEpisode !== null) {
+    const episode = episodes.find(function(item) {
+      return item.number === currentEpisode;
+    });
+    if (episode) {
+      document.getElementById("player").src = getEpisodeUrl(episode, currentServer);
+    }
+  }
+}
+
+function updateServerButtons() {
+  const buttons = document.querySelectorAll(".server-btn");
+  buttons.forEach(function(button) {
+    button.classList.toggle("active", button.dataset.server === currentServer);
+  });
+}
+
+episodes.forEach(function(episode) {
+  const button = document.createElement("button");
+  button.className = "episode";
+  button.dataset.number = episode.number;
+  button.textContent = episode.title || ("Bản " + episode.number);
+  button.onclick = function() {
+    playEpisode(episode.number);
+  };
+  episodeList.appendChild(button);
+});
+
+function playEpisode(number) {
+  const episode = episodes.find(function(item) {
+    return item.number === number;
+  });
+
+  if (!episode) return;
+
+  currentEpisode = number;
+  document.getElementById("player").src = getEpisodeUrl(episode, currentServer);
+
+  localStorage.setItem(lastEpisodeKey, String(number));
+  updateButtons();
+}
+
+function updateButtons() {
+  const buttons = document.querySelectorAll(".episode");
+
+  buttons.forEach(function(button) {
+    const number = Number(button.dataset.number);
+    const episode = episodes.find(function(item) { return item.number === number; });
+    const label = episode.title || ("Bản " + number);
+
+    button.classList.remove("active");
+
+    if (number === currentEpisode) {
+      button.classList.add("active");
+      button.textContent = label;
+    } else {
+      button.textContent = label;
+    }
+  });
+}
+
+function restoreHistory() {
+  const saved = Number(localStorage.getItem(lastEpisodeKey));
+
+  if (saved && episodes.some(function(item) { return item.number === saved; })) {
+    currentEpisode = saved;
+    const savedEpisode = episodes.find(function(item) { return item.number === saved; });
+    document.getElementById("player").src = getEpisodeUrl(savedEpisode, currentServer);
+  } else if (episodes.length) {
+    /* Tự động phát bản đầu tiên khi vào trang */
+    currentEpisode = episodes[0].number;
+    document.getElementById("player").src = getEpisodeUrl(episodes[0], currentServer);
+  }
+
+  updateButtons();
+  updateServerButtons();
+}
+
+restoreHistory();
+
+/* ====== MENU NGĂN KÉO ====== */
+var menuToggle = document.getElementById("menuToggle");
+var drawer = document.getElementById("drawer");
+var drawerOverlay = document.getElementById("drawerOverlay");
+
+function openDrawer() {
+    drawer.classList.add("open");
+    drawerOverlay.classList.add("open");
+    menuToggle.classList.add("open");
+    menuToggle.setAttribute("aria-expanded", "true");
+    drawer.setAttribute("aria-hidden", "false");
+}
+
+function closeDrawer() {
+    drawer.classList.remove("open");
+    drawerOverlay.classList.remove("open");
+    menuToggle.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    drawer.setAttribute("aria-hidden", "true");
+}
+
+menuToggle.addEventListener("click", function () {
+    if (drawer.classList.contains("open")) {
+        closeDrawer();
+    } else {
+        openDrawer();
+    }
+});
+
+drawerOverlay.addEventListener("click", closeDrawer);
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeDrawer();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimeVSub</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+<div class="header-left">
+<button type="button" class="menu-toggle" id="menuToggle" aria-label="Mở menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+</div>
+
+<div class="search-box">
+<input type="search" id="searchInput" placeholder="Tìm kiếm phim..." aria-label="Tìm kiếm phim">
+<button type="button" id="searchButton">Tìm kiếm</button>
+</div>
+</header>
+
+<!-- Menu ngăn kéo bên trái -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+<a href="1.html" class="drawer-brand">
+<img src="../img/logo.png" alt="">
+<span>AnimeVSub</span>
+</a>
+
+<nav class="drawer-nav">
+<a href="1.html" class="drawer-link active">Trang chủ</a>
+</nav>
+</aside>
+
+<main>
+<div class="page-heading">
+<h2>Phim mới thêm</h2>
+</div>
+
+<div class="filter-bar">
+<div class="filter-dropdown" id="genreDropdown">
+<button type="button" class="filter-dropdown-btn" id="genreDropdownBtn" aria-haspopup="true" aria-expanded="false">
+<span id="genreDropdownLabel">Thể loại</span>
+<span class="filter-count" id="genreCount" hidden>0</span>
+</button>
+<div class="filter-dropdown-panel" id="genrePanel"></div>
+</div>
+<div class="filter-dropdown" id="yearDropdown">
+<button type="button" class="filter-dropdown-btn" id="yearDropdownBtn" aria-haspopup="true" aria-expanded="false">
+<span id="yearDropdownLabel">Năm</span>
+<span class="filter-count" id="yearCount" hidden>0</span>
+</button>
+<div class="filter-dropdown-panel" id="yearPanel"></div>
+</div>
+<button type="button" class="filter-reset" id="filterReset">Xóa lọc</button>
+</div>
+
+<!-- Chuyển trang: được JS vẽ tự động bên dưới, xem CURRENT_PAGE / TOTAL_PAGES trong script -->
+<nav class="pagination" id="pageNav" aria-label="Chuyển trang"></nav>
+
+
+           <!-- * Anime * -->
+<div class="movie-list">
+
+<div class="movie"
+     tabindex="0"
+     role="button"
+     data-title="Hội Chứng Tuổi Thanh Xuân"
+     data-poster="../img/hoi-chung-tuoi-thanh-xuan/s1.png"
+     data-type="Anime bộ"
+     data-year="2019"
+     data-genres="Anime bộ,Supernatural,School,Romance,Comedy"
+     data-status="Full"
+     data-language="VietSub"
+     data-duration="13/13"
+     data-quality="HD"
+     data-age-rating="PG-13 - Teens 13 tuổi trở lên"
+     data-studio="CloverWorks"
+     data-director="Masui Souichi"
+     data-country="Nhật Bản"
+     data-season-note="Mùa Thu - 2018"
+     data-seasons='[
+
+{
+  "label": "Phần 1",
+  "url": "../phim/hoi-chung-tuoi-thanh-xuan-phan-1/xem-phim.html",
+  "vi" : "Seishun Buta Yarou wa Bunny Girl Senpai no Yume wo Minai, Rascal Does Not Dream of Bunny Girl Senpai",
+  "title": "Hội Chứng Tuổi Thanh Xuân",
+  "desc": "Hội chứng tuổi dậy thì — một hội chứng bí ẩn, tin đồn chỉ ảnh hưởng đến những người ở tuổi dậy thì. Ví dụ, một cô gái thỏ đột nhiên xuất hiện trước mặt Sakuta Azusagawa. Danh tính thực sự của cô gái thỏ là Mai Sakurajima, một thiếu niên nổi tiếng hiện đang là một học sinh trung học không hoạt động. Vì lý do nào đó, nhân vật quyến rũ của cô không phản ánh trong con mắt của người khác. Trong quá trình tiết lộ bí ẩn đằng sau hiện tượng này, Sakuta bắt đầu khám phá cảm xúc của mình đối với Mai. Đặt trong một thành phố nơi bầu trời và biển tỏa sáng, Sakuta mở ra ý nghĩa đằng sau những cuộc gặp gỡ kì quái của mình với những phụ nữ có hội chứng nói trên.",
+  "poster": "../img/hoi-chung-tuoi-thanh-xuan/s1.png",
+  "status": "Full",
+  "duration": "13/13",
+  "quality": "HD",
+  "ageRating": "PG-13 - Teens 13 tuổi trở lên",
+  "language": "VietSub",
+  "genres": "Anime bộ,Supernatural,School,Romance,Comedy",
+  "director": "Masui Souichi",
+  "country": "Nhật Bản",
+  "studio": "CloverWorks",
+  "seasonNote": "Mùa Thu - 2018"
+},
+
+{
+  "label": "Phần Movie",
+  "url": "../phim/hoi-chung-tuoi-thanh-xuan-movie-1/xem-phim.html",
+  "title": "Hội Chứng Tuổi Thanh Xuân Movie",
+   "vi" : "Seishun Buta Yarou wa Yumemiru Shoujo no Yume wo Minai, The Young Pig-Rascal Isn&#39;t Dreaming of a Dreaming Girl, Seishun Buta Yarou wa Yumemiru Shoujo no Yume wo Minai, Bunny Girl Senpai Movie",
+  "desc": "Dự án phim chuyển thể từ tập tiểu thuyết thứ sáu và thứ bảy của \"Seishun Buta Yarou wa Bunny Girl Senpai no Yume wo Minai\" (The Young Pig-Rascal Is not Dream of a Bunny Girl Upperclassman).",
+  "poster": "../img/hoi-chung-tuoi-thanh-xuan/mv1.png",
+  "status": "Trọn bộ FHD VietSub",
+  "duration": "90 Phút",
+  "quality": "HD",
+  "ageRating": "PG-13 - Teens 13 tuổi trở lên",
+  "language": "VietSub",
+  "genres": "Anime lẻ,School,Romance,Comedy",
+  "director": "Masui Souichi",
+  "country": "Nhật Bản",
+  "studio": "CloverWorks",
+  "seasonNote": "Mùa Hạ - 2019"
+},
+
+{
+  "label": "Phần Movie 2",
+  "url": "../phim/hoi-chung-tuoi-thanh-xuan-movie-2/xem-phim.html",
+  "title": "Hội Chứng Tuổi Thanh Xuân: Em Gái Xuất Hành",
+   "vi" : "Seishun Buta Yarou wa Odekake Sister no Yume wo Minai, Rascal Does Not Dream of a Sister Venturing Out, Bunny Girl Senpai Movie 2",
+  "desc": "Sau khi bị đe dọa tính mạng và những hành vi bắt nạt khác trên mạng, Kaede Azusagawa đã có một phá vỡ phân ly dẫn đến mất trí nhớ hoàn toàn. Trong hai năm tiếp theo, cô sống như một con người hoàn toàn mới, một người khép kín trốn tránh thế giới. May mắn thay, nhờ có sự đồng hành của anh trai và những người bạn mới, cô ấy đã có thể hồi phục — mặc dù cái giá phải trả để có thể hồi phục là những kỷ niệm trong hai năm quý giá đó. Bây giờ Kaede không chỉ phải cố gắng để tiến về phía trước với một lỗ hổng trong ký ức mà cô ấy còn phải đối phó với nỗi sợ hãi mà những người gần gũi nhất với mình bây giờ sẽ cảm thấy xa cách với con người hiện tại của cô ấy vì quá thân thuộc với bóng hình của cô gái trong hai năm qua.",
+  "poster": "../img/hoi-chung-tuoi-thanh-xuan/mv2.png",
+  "status": "Trọn bộ FHD VietSub",
+  "duration": "1 giờ 13 phút",
+  "quality": "FHD",
+  "ageRating": "PG-13 - Teens 13 tuổi trở lên",
+  "language": "VietSub",
+  "genres": "Anime lẻ,Phim chiếu rạp,Supernatural,Romance,Drama",
+  "director": "Masui Souichi",
+  "country": "Nhật Bản",
+  "studio": "CloverWorks",
+  "seasonNote": "Mùa Xuân - 2023"
+},
+
+{
+  "label": "Phần Movie 3",
+  "url": "../phim/hoi-chung-tuoi-thanh-xuan-movie-3/xem-phim.html",
+  "title": "Hội Chứng Tuổi Thanh Xuân: Cô Bé Đeo Cặp Sách",
+   "vi" : "Seishun Buta Yarou wa Randoseru Girl no Yume wo Minai, Rascal Does Not Dream of a Knapsack Kid",
+  "desc": "Cuối cùng, ngày Mai tốt nghiệp cấp ba cũng đã đến. Trong khi Sakuta háo hức chờ đợi bạn gái, thì một em học sinh tiểu học trông y hệt cô xuất hiện trước mặt cậu. Nghi ngờ và vì những lý do không hề hay ho gì... Cùng lúc đó, bố của Sakuta và Kaede bất ngờ gọi điện, nói rằng mẹ họ muốn gặp Kaede. Mẹ cô bé đã nhập viện vì tình trạng của Kaede khiến bà không thể chịu đựng được thêm nữa, vậy bây giờ bà ấy có thể muốn gì? ",
+  "poster": "../img/hoi-chung-tuoi-thanh-xuan/mv3.png",
+  "status": "Trọn bộ FHD VietSub",
+  "duration": "1 giờ 15 phút",
+  "quality": "FHD",
+  "ageRating": "PG-13 - Teens 13 tuổi trở lên",
+  "language": "VietSub",
+  "genres": "Anime lẻ,Supernatural,Romance,Drama",
+  "director": "Masui Souichi",
+  "country": "Nhật Bản",
+  "studio": "CloverWorks",
+  "seasonNote": "Mùa Hạ - 2023"
+},
+
+
+
+{
+  "label": "Phần 2",
+  "url": "../phim/hoi-chung-tuoi-thanh-xuan-phan-2/xem-phim.html",
+  "title": "Seishun Buta Yarou wa Santa Claus no Yume wo Minai",
+   "vi" : "Rascal Does Not Dream of Santa Claus, Seishun Buta Yarou: Daigakusei-hen",
+  "desc": "Mùa 2 của Seishun Buta Yarou wa Randoseru Girl no Yume wo Minai.",
+  "poster": "../img/hoi-chung-tuoi-thanh-xuan/s2.png",
+  "status": "Trọn bộ FHD VietSub",
+  "duration": "13/13",
+  "quality": "FHD",
+  "ageRating": "PG-13 - Teens 13 tuổi trở lên",
+  "language": "VietSub",
+  "genres": "Anime bộ,School,Supernatural,Romance,Drama",
+  "director": "Masui Souichi",
+  "country": "Nhật Bản",
+  "studio": "CloverWorks",
+  "seasonNote": "Mùa Hạ - 2025"
+}
+
+
+
+]'>
+<img src="../img/hoi-chung-tuoi-thanh-xuan/s1.png">
+<span class="movie-badge">Anime Bộ</span>
+<div class="movie-info">
+<h3>Hội Chứng Tuổi Thanh Xuân</h3>
+</div>
+</div>
+
+
+
+<div class="movie"
+     tabindex="0"
+     role="button"
+     data-title="Đứa Con Của Thời Tiết - Tenki no Ko"
+     data-poster="../img/dua-con-cua-thoi-tiet-tenki-no-ko/poster.png"
+     data-type="Anime Lẻ"
+     data-year="2019"
+     data-genres="Anime lẻ,Romance,Slice of Life,Fantasy,Drama"
+     data-status="Full"
+     data-language="Trọn bộ HD VietSub"
+     data-duration="01/01"
+     data-quality="FHD"
+     data-age-rating="None"
+     data-studio="CoMix Wave Films"
+     data-director="Makoto Shinkai"
+     data-country="Nhật Bản"
+     data-season-note="Mùa Hạ - 2019"
+     data-desc="Mùa hè năm đầu cấp Ba, Hodaka bỏ nhà ra đi. Cậu từ một hòn đảo xa xôi hẻo lánh đến Tokyo, nhưng sau đó nhanh chóng rơi vào cảnh túng thiếu và phải sống chuỗi ngày cô đơn. Nhưng cuối cùng cậu đã tìm được công việc: viết bài cho một tạp chí huyền bí. Sau khi cậu bắt đầu công việc, mưa cứ rơi mãi rơi mãi không thôi. Ở một góc thành phố đông đúc và nhộn nhịp, Hodaka đã gặp thiếu nữ tên Hina."
+
+     data-seasons='[
+{"label":"Xem phim","url":"../phim/dua-con-cua-thoi-tiet-tenki-no-ko/xem-phim.html"}
+
+]'>
+<img src="../img/dua-con-cua-thoi-tiet-tenki-no-ko/poster.png">
+<span class="movie-badge">Anime lẻ</span>
+<div class="movie-info">
+<h3>Đứa Con Của Thời Tiết - Tenki no Ko</h3>
+<p class="ten-anime">Weathering With You, Mưa nắng bên em, Nắng mưa cùng bạn</p>
+</div>
+</div>
+
+
+<div class="movie"
+     tabindex="0"
+     role="button"
+     data-title="Pokémon"
+     data-poster="../img/pokemon-tv-series/poster.png"
+     data-type="Anime Bộ"
+     data-year="1997"
+     data-genres="Anime bộ,Adventure,Comedy,Fantasy,Action"
+     data-status="Full"
+     data-language="VietSub"
+     data-seasons='[
+
+{
+  "label": "Phần 1",
+  "url": "../phim/pokemon-tv-series-phan-1/xem-phim.html",
+  "vi" : "Pokemon Phần 1 - Liên Đoàn Indigo",
+  "title": "Pokemon",
+  "desc": "Đó là sinh nhật lần thứ 10 của Ash Ketchum và anh ấy đã sẵn sàng làm những gì mà nhiều đứa trẻ 10 tuổi ở vùng Kanto đã đặt ra trở thành Huấn luyện viên Pokémon! Mọi thứ không diễn ra đúng như kế hoạch của anh ấy khi anh ấy kết thúc với một con Pikachu thay vì một Pokémon đầu tiên thông thường, và việc giành được Huy hiệu phòng tập hóa ra khó khăn hơn anh ấy nghĩ rất nhiều. May mắn thay, anh ấy có các cựu lãnh đạo phòng tập thể dục Brock và Misty ở bên cạnh, cùng với hàng loạt những người bạn Pokémon mới, bao gồm Bulbasaur, Squirtle và Charmander.",
+  "poster": "../img/pokemon-tv-series/s1.png",
+  "status": "Full VietSub",
+  "duration": "82/82",
+  "quality": "HD",
+  "ageRating": "N/A",
+  "language": "VietSub",
+  "genres": "Anime bộ,Adventure, Comedy, Fantasy, Action",
+  "director": "",
+  "studio": "",
+  "country": "Nhật Bản",
+  "seasonNote": "Mùa Xuân - 1997"
+},
+
+{
+  "label": "Phần 2",
+  "url": "../phim/pokemon-tv-series-phan-2/xem-phim.html",
+  "vi" : "Pokémon Phần 2 – Cuộc Phiêu Lưu Ở Quần Đảo Orange",
+  "title": "Pokemon",
+  "desc": "Cuộc hành trình của Ash đến đỉnh Indigo League vẫn tiếp tục – nhưng liệu tình bạn của anh với đối thủ cạnh tranh của Pokémon League là Richie có gây nguy hiểm cho cơ hội của anh không? Với hành trình Kanto của mình đã hoàn thành, Ash nhận thấy vẫn còn rất nhiều điều để xem và làm khi Giáo sư Oak gửi anh ta và bạn bè của anh ta đến Quần đảo Orange. Brock phải lòng Giáo sư Ivy hấp dẫn và quyết định ở lại với cô ấy, để Ash và Misty một mình như một bộ đôi năng động – ít nhất là cho đến khi họ gặp người theo dõi Pokémon gan dạ Tracey Sketchit!",
+  "poster": "../img/pokemon-tv-series/s2.png",
+  "status": "Full VietSub",
+  "duration": "36/36",
+  "quality": "HD",
+  "ageRating": "N/A",
+  "language": "VietSub",
+  "genres": "Anime bộ,Adventure,Comedy,Fantasy,Action",
+  "director": "",
+  "studio": "",
+  "country": "Nhật Bản",
+  "seasonNote": "Mùa Đông - 1999"
+},
+
+
+{
+  "label": "Phần 3",
+  "url": "../phim/pokemon-tv-series-phan-3/xem-phim.html",
+  "vi" : "Pokémon Phần 3 - Hành Trình Johto",
+  "title": "Pokemon",
+  "desc": "Orange League vẫy gọi và Ash trả lời cuộc gọi, đối đầu với Orange Crew và thủ lĩnh của họ, Drake. Khi trở lại Thị trấn Pallet, Ash và Misty đoàn tụ với Brock và bắt đầu hành trình tiếp theo trong hành trình Pokémon của họ - vùng Johto! Mặc dù anh ấy vẫn còn một việc lặt vặt để chạy cho Giáo sư Oak, Ash đã nhảy bằng cả hai chân vào Liên đoàn Johto, đảm nhận một vài Thủ lĩnh phòng tập và thêm các Pokémon như Totodile và Chikorita vào đội của mình.",
+  "poster": "../img/pokemon-tv-series/s3.png",
+  "status": "Full VietSub",
+  "duration": "41/41",
+  "quality": "HD",
+  "ageRating": "N/A",
+  "language": "VietSub",
+  "genres": "Anime bộ,Adventure,Comedy,Fantasy,Action",
+  "director": "",
+  "studio": "",
+  "country": "Nhật Bản",
+  "seasonNote": "Mùa Thu - 1999"
+}
+
+]'>
+<img src="../img/pokemon-tv-series/poster.jpg" alt="Pokémon">
+<span class="movie-badge">Anime bộ</span>
+<div class="movie-info">
+<h3>Pokémon</h3>
+<p class="ten-anime">Bảo Bối Thần Kì</p>
+</div>
+</div>
+
+
+<p id="noResults" class="no-results" hidden>Không tìm thấy kết quả.</p>
+
+</main>
+
+<footer class="site-footer">
+    © 2026 AnimeVSub
+</footer>
+
+<script>
+/* ====== CHUYỂN TRANG (mỗi trang là 1 file .html riêng) ======
+   - CURRENT_PAGE: trang hiện tại của CHÍNH FILE NÀY (index.html = 1).
+     Copy cả file này sang trang2.html, trang3.html... rồi chỉ cần đổi số này.
+   - TOTAL_PAGES: tổng số trang đang có. Thêm trang mới thì tăng số này lên ở TẤT CẢ các file. */
+var CURRENT_PAGE = 1;
+var TOTAL_PAGES = 100;
+</script>
+<script src="script.js"></script>
+
+</body>
+</html>

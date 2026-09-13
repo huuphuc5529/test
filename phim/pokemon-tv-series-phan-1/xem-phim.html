@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/style.css">
+<title>Pokémon - Phần 1</title>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <button type="button" class="menu-toggle" id="menuToggle" aria-label="Mở menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Menu ngăn kéo bên trái -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <a href="/index.html" class="drawer-brand">
+    <img src="/img/logo.png">
+    <span>AnimeVsub</span>
+  </a>
+
+  <nav class="drawer-nav">
+    <a href="/index.html" class="drawer-link">Trang chủ</a>
+  </nav>
+</aside>
+
+<main>
+
+  <div class="player">
+    <iframe id="player" src="" allowfullscreen></iframe>
+  </div>
+
+  <div class="episode-navigation">
+    <button id="prevEpisode" onclick="previousEpisode()">←</button>
+    <span id="currentEpisode"></span>
+    <button id="nextEpisode" onclick="nextEpisode()">→</button>
+  </div>
+
+  <section class="server-select">
+    <h2>Chọn Server:</h2>
+    <div id="server-list" class="server-list"></div>
+  </section>
+
+  <section class="episodes">
+    <h2>Yumei Anime</h2>
+    <div id="episode-list" class="episode-list"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+    © AnimeVSub
+</footer>
+
+<script>
+const episodes = [
+
+{ number: 1, title: "Pokemon! Tớ Chọn Cậu!", servers: { H: "https://player.abyssplayer.com/E0dsnqE9I" } },
+{ number: 2, title: "Trận quyết đấu! Trung tâm Pokemon!", servers: { H: "https://player.abyssplayer.com/qBoz62urO" } },
+{ number: 3, title: "Thu phục Pokemon!", servers: { H: "https://player.abyssplayer.com/G-1ucucbW" } },
+{ number: 4, title: "Thách đấu thiếu niên Samurai!", servers: { H: "https://player.abyssplayer.com/SdCTH__OX" } },
+{ number: 5, title: "Trận đấu ở thành phố Nibi!", servers: { H: "https://player.abyssplayer.com/2M8vxDOXv" } },
+{ number: 6, title: "Pippi và đá mặt trăng", servers: { H: "https://player.abyssplayer.com/sZu_hPpWi" } },
+{ number: 7, title: "Bông hoa nước của thành phố Hanada", servers: { H: "https://player.abyssplayer.com/dGZo9pYjw" } },
+{ number: 8, title: "Đường tới liên minh Pokemon", servers: { H: "https://player.abyssplayer.com/6zlSkSeIP" } },
+{ number: 9, title: "Sổ tay chiến thắng Pokemon", servers: { H: "https://player.abyssplayer.com/IGQLu3Z7V" } },
+{ number: 10, title: "Fushigidane của ngôi làng bí ẩn", servers: { H: "https://player.abyssplayer.com/l2JZrKgXF" } },
+{ number: 11, title: "Pokemon đi lạc, Hitokage", servers: { H: "https://player.abyssplayer.com/YGqwMgk8F" } },
+{ number: 12, title: "Quân đoàn Zenigame xuất hiện!", servers: { H: "https://player.abyssplayer.com/lYkF1Xiie" } },
+{ number: 13, title: "Ngọn hải đăng của Masaki", servers: { H: "https://player.abyssplayer.com/4-RWrfg2a" } },
+{ number: 14, title: "Cuộc đối đầu giữa điện! Hội quán Kuchiba", servers: { H: "https://player.abyssplayer.com/2NMoHIcCn" } },
+{ number: 15, title: "Trận chiến trên con tàu St_ Anne!", servers: { H: "https://player.abyssplayer.com/gd6BFhMKl" } },
+{ number: 16, title: "Pokemon phiêu lưu kí", servers: { H: "https://player.abyssplayer.com/5Daywtmol" } },
+{ number: 17, title: "Hòn đảo Pokemon khổng lồ!", servers: { H: "https://player.abyssplayer.com/XQV1-3i-5" } },
+{ number: 18, title: "Ngày Nghỉ Ở Aopulco", servers: { H: "https://player.abyssplayer.com/keT4hUVX7" } },
+{ number: 19, title: "Menokurage và Dokukurage", servers: { H: "https://player.abyssplayer.com/KcUx5zJ3u" } },
+{ number: 20, title: "Pokemon ma và kỳ nghỉ hè", servers: { H: "https://player.abyssplayer.com/IuTj5CQWe" } },
+{ number: 21, title: "Tạm biệt Butterfree", servers: { H: "https://player.abyssplayer.com/OSBE_gC7k" } },
+{ number: 22, title: "Đại quyết đấu siêu năng lực với Casey!", servers: { H: "https://player.abyssplayer.com/PKhKWdkqU" } },
+{ number: 23, title: "Thu phục bóng ma trong tháp Pokemon!", servers: { H: "https://player.abyssplayer.com/AqezEaBQ2" } },
+{ number: 24, title: "Cuộc chiến giữa bóng ma và siêu năng lực!", servers: { H: "https://player.abyssplayer.com/lhx5tfvGQ" } },
+{ number: 25, title: "Đừng nổi giận nhé Okorizaru!", servers: { H: "https://player.abyssplayer.com/sZinolpkk" } },
+{ number: 26, title: "Erika và Kusaihana", servers: { H: "https://player.abyssplayer.com/uA3s6mrLg" } },
+{ number: 27, title: "Sleeper và Pokemon thôi miên!", servers: { H: "https://player.abyssplayer.com/daKzCj2UK" } },
+{ number: 28, title: "Rokon! Trận chiến của những nhà chăm sóc!", servers: { H: "https://player.abyssplayer.com/tIwLuNECJ" } },
+{ number: 29, title: "Pokemon giác đấu! Trận đại chiến!", servers: { H: "https://player.abyssplayer.com/26uXd1TXL" } },
+{ number: 30, title: "Giấc mơ chuột điện của Coil!", servers: { H: "https://player.abyssplayer.com/5_rRYCmuMX" } },
+{ number: 31, title: "Những con Digda!", servers: { H: "https://player.abyssplayer.com/yfELC9fiR" } },
+{ number: 32, title: "Cuộc tranh tài ở hội quán hồng nhạt!", servers: { H: "https://player.abyssplayer.com/irJ04FLqK" } },
+{ number: 33, title: "Cuộc chạy đua của Pokemon lửa!", servers: { H: "https://player.abyssplayer.com/HiZcfi3hM" } },
+{ number: 34, title: "Lời ru của Garura", servers: { H: "https://player.abyssplayer.com/aC1aN_76w" } },
+{ number: 35, title: "Truyền thuyết về Miniryu", servers: { H: "https://player.abyssplayer.com/ASxcvat5w8" } },
+{ number: 36, title: "Những khó khăn trong cuộc hành trình giông bão", servers: { H: "https://player.abyssplayer.com/Q_4CzeWh5" } },
+{ number: 37, title: "Cô gái bắt chước và Metamon", servers: { H: "https://player.abyssplayer.com/NZkiJDbMn" } },
+{ number: 38, title: "Chiến binh điện não Polygon", servers: { H: "https://player.abyssplayer.com/pMs5LD1b8" } },
+{ number: 39, title: "Khu rừng của Pikachu", servers: { H: "https://player.abyssplayer.com/HDmLm2MEi" } },
+{ number: 40, title: "Bốn anh em Ibui", servers: { H: "https://player.abyssplayer.com/sj51E1KZF" } },
+{ number: 41, title: "Tỉnh dậy đi! Kabigon!", servers: { H: "https://player.abyssplayer.com/5FBw4xMH2" } },
+{ number: 42, title: "Cuộc quyết chiến! Hội quán Pokemon!", servers: { H: "https://player.abyssplayer.com/SOUB3jfCH" } },
+{ number: 43, title: "Cuộc hành quân của quân đoàn Nassy!", servers: { H: "https://player.abyssplayer.com/I8vRvzJV_" } },
+{ number: 44, title: "Paras và Parasect", servers: { H: "https://player.abyssplayer.com/7o34x0v7W" } },
+{ number: 45, title: "Hát đi Purin!", servers: { H: "https://player.abyssplayer.com/nNg1bPgWr" } },
+{ number: 46, title: "Phục hồi! Pokemon hoá thạch!", servers: { H: "https://player.abyssplayer.com/ftpDk_ORx" } },
+{ number: 47, title: "Đơn thuốc của Lucky", servers: { H: "https://player.abyssplayer.com/Jny6bW5rE" } },
+{ number: 48, title: "Kojiro và Gardie!", servers: { H: "https://player.abyssplayer.com/TWsTnypSO" } },
+{ number: 49, title: "Vịt Kamonegi!", servers: { H: "https://player.abyssplayer.com/IwO4pliuGE" } },
+{ number: 50, title: "Togepi sẽ thuộc về ai!", servers: { H: "https://player.abyssplayer.com/g7uY8d1qA" } },
+{ number: 51, title: "Fushigidane của khu vườn hoa bí ẩn", servers: { H: "https://player.abyssplayer.com/gOXhKAs1V" } },
+{ number: 52, title: "Kích chiến! Lễ hội búp bê", servers: { H: "https://player.abyssplayer.com/zKts_ZLQU" } },
+{ number: 53, title: "Toàn viên tập hợp tại Tết thiếu nhi", servers: { H: "https://player.abyssplayer.com/TKtNBIhtc" } },
+{ number: 54, title: "Chó cảnh sát Gardie!", servers: { H: "https://player.abyssplayer.com/yL0rltalN" } },
+{ number: 55, title: "Chụp ảnh Pikachu!", servers: { H: "https://player.abyssplayer.com/YDQFZUNO_" } },
+{ number: 56, title: "Cuộc kiểm tra về Pokemon!", servers: { H: "https://player.abyssplayer.com/eTOo5GNGA" } },
+{ number: 57, title: "Bí mật của trung tâm nuôi thú!", servers: { H: "https://player.abyssplayer.com/-V37qIPES" } },
+{ number: 58, title: "Nổi lửa lên! Hội quán Guren!", servers: { H: "https://player.abyssplayer.com/VB5-pFITc" } },
+{ number: 59, title: "Quyết chiến! Hội quán Guren!", servers: { H: "https://player.abyssplayer.com/Ec49RKdZU" } },
+{ number: 60, title: "Đảo rùa Kamex", servers: { H: "https://player.abyssplayer.com/c-mp5hMib" } },
+{ number: 61, title: "Hội quán Hanada! Trận chiến dưới nước!", servers: { H: "https://player.abyssplayer.com/OeuNTDXKb" } },
+{ number: 62, title: "Cuộc đấu giữa Pippi và Purin", servers: { H: "https://player.abyssplayer.com/aEMe0A-ZI" } },
+{ number: 63, title: "Hội quán Tokiwa! Tấm huy chương cuối cùng!", servers: { H: "https://player.abyssplayer.com/cCqNp-fWm" } },
+{ number: 64, title: "Barrierd của đội xiếc", servers: { H: "https://player.abyssplayer.com/GFqOv0z4v" } },
+{ number: 65, title: "Giáng sinh của Rougela", servers: { H: "https://player.abyssplayer.com/RXjR1t-cT" } },
+{ number: 66, title: "Một chuyến dã ngoại", servers: { H: "https://player.abyssplayer.com/M4g5xeVnq" } },
+{ number: 67, title: "Quyết đấu đối thủ! Phòng thí nghiệm của tiến sĩ Okido!", servers: { H: "https://player.abyssplayer.com/ziGIrU2QT" } },
+{ number: 68, title: "Yadon trở thành Yadoran", servers: { H: "https://player.abyssplayer.com/62SLGIfMY" } },
+{ number: 69, title: "Truyền thuyết Pikachu đi trên sóng", servers: { H: "https://player.abyssplayer.com/pGdyrEsJE" } },
+{ number: 70, title: "Công viên thực vật của Kusaihana", servers: { H: "https://player.abyssplayer.com/VCWVdQGkiz" } },
+{ number: 71, title: "Điện ảnh Pokemon!", servers: { H: "https://player.abyssplayer.com/ug8NoGM5L" } },
+{ number: 72, title: "Nyasu học tiếng người!", servers: { H: "https://player.abyssplayer.com/0jXTer3KF" } },
+{ number: 73, title: "Tứ thiên vương Shiba xuất hiện!", servers: { H: "https://player.abyssplayer.com/GSUtLno5_" } },
+{ number: 74, title: "Kích đấu! Pokemon siêu cổ đại", servers: { H: "https://player.abyssplayer.com/EiMDi1s2a" } },
+{ number: 75, title: "Gậy xương của Garagara", servers: { H: "https://player.abyssplayer.com/Kc4yZghGI" } },
+{ number: 76, title: "Fire! Lễ ra mắt liên minh Pokemon!", servers: { H: "https://player.abyssplayer.com/aN96dXFBS" } },
+{ number: 77, title: "Khai mạc liên minh Pokemon! Sân đấu nước!", servers: { H: "https://player.abyssplayer.com/ZaLjVpKnI" } },
+{ number: 78, title: "Sân đấu băng! Trận chiến của Pokemon lửa!", servers: { H: "https://player.abyssplayer.com/rK1o2EjHX" } },
+{ number: 79, title: "Sân đấu cỏ! Đối thủ bất ngờ!", servers: { H: "https://player.abyssplayer.com/jCHeQr0Z4" } },
+{ number: 80, title: "Đối thủ xuất hiện!", servers: { H: "https://player.abyssplayer.com/xzMx2Yuvc" } },
+{ number: 81, title: "Sân thi đấu Sekiei! Cuộc đấu với Hiroshi!", servers: { H: "https://player.abyssplayer.com/arKncFnSb" } },
+{ number: 82, title: "Liên minh Pokemon và cuộc đấu cuối cùng!", servers: { H: "https://player.abyssplayer.com/aJ-riKI_m" } }
+
+];
+
+const storageKey = "watched-pkm-s1";
+const lastEpisodeKey = "last-pkm-s1";
+const serverKey = "server-pkm-s1";
+let currentEpisode = null;
+
+/* Danh sách server xem phim.
+   name = tên nội bộ, label = chữ hiện trên nút.
+   Muốn thêm link riêng cho từng server ở 1 tập cụ thể,
+   thêm field "servers: { FB: '...', HDX: '...' }" vào tập đó trong mảng episodes ở trên.
+   Nếu tập không có link riêng cho server đang chọn, trang sẽ tự dùng lại link "url" mặc định (server DU). */
+const servers = [
+  { name: "H", label: "H" }
+];
+let currentServer = localStorage.getItem(serverKey) || servers[0].name;
+
+const episodeList = document.getElementById("episode-list");
+const serverListEl = document.getElementById("server-list");
+
+servers.forEach(function(server) {
+  const button = document.createElement("button");
+  button.className = "server-btn";
+  button.dataset.server = server.name;
+  button.textContent = server.label;
+  button.onclick = function() {
+    selectServer(server.name);
+  };
+  serverListEl.appendChild(button);
+});
+
+function getEpisodeUrl(episode, server) {
+  if (episode.servers && episode.servers[server]) {
+    return episode.servers[server];
+  }
+  return episode.url;
+}
+
+function selectServer(server) {
+  currentServer = server;
+  localStorage.setItem(serverKey, server);
+  updateServerButtons();
+
+  if (currentEpisode !== null) {
+    const episode = episodes.find(function(item) {
+      return item.number === currentEpisode;
+    });
+    if (episode) {
+      document.getElementById("player").src = getEpisodeUrl(episode, currentServer);
+    }
+  }
+}
+
+function updateServerButtons() {
+  const buttons = document.querySelectorAll(".server-btn");
+  buttons.forEach(function(button) {
+    button.classList.toggle("active", button.dataset.server === currentServer);
+  });
+}
+
+episodes.forEach(function(episode) {
+  const button = document.createElement("button");
+  button.className = "episode";
+  button.dataset.number = episode.number;
+  button.textContent = String(episode.number).padStart(2);    
+  button.onclick = function() {
+    playEpisode(episode.number);
+  };
+  episodeList.appendChild(button);
+});
+
+function playEpisode(number) {
+  const episode = episodes.find(function(item) {
+    return item.number === number;
+  });
+
+  if (!episode) return;
+
+  currentEpisode = number;
+  document.getElementById("player").src = getEpisodeUrl(episode, currentServer);
+
+  localStorage.setItem(lastEpisodeKey, String(number));
+  saveWatched(number);
+  updateButtons();
+  updateNavigation();
+
+  String(number).padStart(2);
+}
+
+function saveWatched(number) {
+  let watched = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+  if (!watched.includes(number)) {
+    watched.push(number);
+  }
+
+  localStorage.setItem(storageKey, JSON.stringify(watched));
+}
+
+function updateButtons() {
+  const watched = JSON.parse(localStorage.getItem(storageKey)) || [];
+  const buttons = document.querySelectorAll(".episode");
+
+  buttons.forEach(function(button) {
+    const number = Number(button.dataset.number);
+    button.classList.remove("active", "watched");
+
+    if (number === currentEpisode) {
+      button.classList.add("active");
+    } else if (watched.includes(number)) {
+      button.classList.add("watched");
+    }
+    button.textContent = String(number).padStart(2);
+  });
+}
+
+function nextEpisode() {
+  if (currentEpisode === null) {
+    playEpisode(episodes[0].number);
+    return;
+  }
+
+  const index = episodes.findIndex(function(item) {
+    return item.number === currentEpisode;
+  });
+
+  if (index >= 0 && index < episodes.length - 1) {
+    playEpisode(episodes[index + 1].number);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+function previousEpisode() {
+  if (currentEpisode === null) return;
+
+  const index = episodes.findIndex(function(item) {
+    return item.number === currentEpisode;
+  });
+
+  if (index > 0) {
+    playEpisode(episodes[index - 1].number);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+function updateNavigation() {
+  const current = document.getElementById("currentEpisode");
+  const previous = document.getElementById("prevEpisode");
+  const next = document.getElementById("nextEpisode");
+
+
+  if (currentEpisode === null) {
+    current.textContent = "";
+    previous.disabled = true;
+    next.disabled = false;
+    return;
+  }
+
+
+  const episode = episodes.find(function(item) {
+    return item.number === currentEpisode;
+  });
+
+
+  const index = episodes.findIndex(function(item) {
+    return item.number === currentEpisode;
+  });
+  
+  
+     <!-- Xoá cái này nếu không nhập tên tập -->
+current.textContent = episode.title;
+
+     
+  previous.disabled = index <= 0;
+  next.disabled = index >= episodes.length - 1;
+}
+
+function restoreHistory() {
+  const saved = Number(localStorage.getItem(lastEpisodeKey));
+
+  if (saved && episodes.some(function(item) { return item.number === saved; })) {
+    currentEpisode = saved;
+    const savedEpisode = episodes.find(function(item) { return item.number === saved; });
+    document.getElementById("player").src = getEpisodeUrl(savedEpisode, currentServer);
+  }
+updateButtons();
+  updateNavigation();
+  updateServerButtons();
+
+  if (currentEpisode !== null) {
+    const episode = episodes.find(function(item) {
+      return item.number === currentEpisode;
+    });
+String(currentEpisode).padStart(2)
+  }
+}
+
+restoreHistory();
+
+/* ====== MENU NGĂN KÉO ====== */
+var menuToggle = document.getElementById("menuToggle");
+var drawer = document.getElementById("drawer");
+var drawerOverlay = document.getElementById("drawerOverlay");
+
+function openDrawer() {
+    drawer.classList.add("open");
+    drawerOverlay.classList.add("open");
+    menuToggle.classList.add("open");
+    menuToggle.setAttribute("aria-expanded", "true");
+    drawer.setAttribute("aria-hidden", "false");
+}
+
+function closeDrawer() {
+    drawer.classList.remove("open");
+    drawerOverlay.classList.remove("open");
+    menuToggle.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    drawer.setAttribute("aria-hidden", "true");
+}
+
+menuToggle.addEventListener("click", function () {
+    if (drawer.classList.contains("open")) {
+        closeDrawer();
+    } else {
+        openDrawer();
+    }
+});
+
+drawerOverlay.addEventListener("click", closeDrawer);
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeDrawer();
+});
+</script>
+
+</body>
+</html>
